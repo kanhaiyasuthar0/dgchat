@@ -11,6 +11,13 @@ export const {
     GoogleProvider({
       clientId: process.env.NEXT_CLIENTID,
       clientSecret: process.env.NEXT_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
   trustHost: true,
