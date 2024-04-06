@@ -13,4 +13,5 @@ export const {
       clientSecret: process.env.NEXT_CLIENT_SECRET,
     }),
   ],
+  trustHost: true,
 });
