@@ -1,10 +1,7 @@
-"use client";
 import React, { useState, useEffect, FC } from "react";
 import Select, { SingleValue } from "react-select";
 import { Country, State } from "country-state-city";
-
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
 // Define types for the options used in react-select
 interface IOption {
   label: string;
@@ -16,29 +13,34 @@ interface CountryStateSelectorProps {
   handleClose: () => void;
 }
 
-// Custom styles for react-select
+// Unfortunately, react-select doesn't support TailwindCSS utility classes directly.
+// You'll need to define custom styles for react-select components
+// and try to match them with your TailwindCSS theme colors as closely as possible.
 const customStyles = {
-  control: (provided: any) => ({
-    ...provided,
-    backgroundColor: "#2D2D2D",
-    color: "white",
-    borderColor: "#4A5568",
-  }),
-  singleValue: (provided: any) => ({
-    ...provided,
-    color: "white",
-  }),
-  menu: (provided: any) => ({
-    ...provided,
-    backgroundColor: "#2D2D2D",
-  }),
-  option: (provided: any, state: { isSelected: boolean }) => ({
-    ...provided,
-    backgroundColor: state.isSelected ? "#4A5568" : "#2D2D2D",
+  control: (styles: any) => ({
+    ...styles,
+    // backgroundColor: "transparent",
+    borderColor: "#374151", // gray-700
     color: "white",
     ":hover": {
-      backgroundColor: "#4A5568",
+      borderColor: "#4B5563", // gray-600
     },
+  }),
+  menu: (styles: any) => ({
+    ...styles,
+    backgroundColor: "#1F2937", // gray-800
+  }),
+  option: (styles: any, { isFocused, isSelected }: any) => ({
+    ...styles,
+    backgroundColor: isSelected ? "#374151" : isFocused ? "#4B5563" : undefined,
+    color: "#F9FAFB", // white-ish
+    ":active": {
+      backgroundColor: "#374151",
+    },
+  }),
+  singleValue: (styles: any) => ({
+    ...styles,
+    color: "black", // gray-50
   }),
 };
 
@@ -101,43 +103,29 @@ const CountryStateSelector: FC<CountryStateSelectorProps> = ({
   }, [selectedCountry]);
 
   return (
-    <div className="p-4 dark:bg-gray-800 bg-white rounded-lg">
-      <div className="mb-4">
-        <label
-          htmlFor="country"
-          className="block text-sm font-medium dark:text-gray-300 text-gray-900 mb-1"
-        >
-          Country
-        </label>
-        <Select
-          id="country"
-          options={countries}
-          value={selectedCountry}
-          onChange={setSelectedCountry}
-          styles={customStyles}
-          placeholder="Select a country"
-        />
-      </div>
-      <div>
-        <label
-          htmlFor="state"
-          className="block text-sm font-medium dark:text-white text-gray-900 mb-1"
-        >
-          State
-        </label>
-        <Select
-          id="state"
-          options={states}
-          value={selectedState}
-          onChange={handleStateChange}
-          styles={customStyles}
-          placeholder="Select a state"
-          isDisabled={!selectedCountry}
-        />
-      </div>
+    <div className="dark:bg-gray-800 bg-white p-4 rounded-lg shadow">
+      <Select
+        options={countries}
+        value={selectedCountry}
+        onChange={setSelectedCountry}
+        styles={customStyles}
+        classNamePrefix="react-select"
+        placeholder="Select a country..."
+        className="dark:text-gray-200 text-gray-800"
+      />
+      <Select
+        options={states}
+        value={selectedState}
+        onChange={handleStateChange}
+        styles={customStyles}
+        classNamePrefix="react-select"
+        placeholder="Select a state..."
+        className="mt-4 dark:text-gray-200 text-gray-800"
+        isDisabled={!selectedCountry}
+      />
       <button
         onClick={handleSave}
-        className="mt-4 bg-gray-300 dark:bg-gray-800 text-gray-900 dark:text-white font-bold py-2 px-4 rounded hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-opacity-50 shadow-lg transform transition-transform duration-150 ease-in-out hover:scale-105"
+        className="mt-4 w-full dark:text-white text-white bg-gray-600 hover:bg-black-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-black-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
       >
         Save
       </button>

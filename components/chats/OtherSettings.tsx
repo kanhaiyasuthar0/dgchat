@@ -74,7 +74,7 @@ const SettingsDialog = ({
           </li>
         </ul>
       </div>
-      <div className="flex-grow p-5 min-h-[250px] bg-gray-100 dark:bg-gray-900">
+      <div className="flex-grow p-5 min-h-[250px] bg-white dark:bg-gray-900">
         {renderSection()}
       </div>
     </div>

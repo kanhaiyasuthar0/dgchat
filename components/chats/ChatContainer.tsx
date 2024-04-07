@@ -118,12 +118,14 @@ const ChatContainer = () => {
       // Optionally handle error state here
     }
   }
+  useEffect(() => {
+    setTimeout(() => {
+      if (bottomRef && bottomRef?.current) {
+        bottomRef?.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 0);
+  }, [chatExchanges]);
 
-  setTimeout(() => {
-    if (bottomRef && bottomRef?.current) {
-      bottomRef?.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, 0);
   return (
     <div className="flex flex-col h-full dark:bg-gray-900 bg-gray-100 p-4">
       <div className="flex-1 overflow-auto">

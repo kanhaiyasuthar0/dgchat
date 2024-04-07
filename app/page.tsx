@@ -44,7 +44,7 @@ export default function Home() {
       return false;
     }
   };
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && !localStorage?.getItem("theme")) {
     document.documentElement.classList.add("dark");
     localStorage?.setItem("theme", "dark");
   }
@@ -63,10 +63,9 @@ export default function Home() {
 
   // rendering components for not logged in users
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-900 text-white">
+    <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <h1 className="text-4xl font-semibold mb-6">Welcome Back!</h1>
       <p className="text-xl mb-4">Sign in to continue</p>
-
       <Button
         className={`text-white bg-black focus:ring-4 ont-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center transition-colors duration-150 ${
           isLoading ? "cursor-not-allowed opacity-50" : "opacity-100"

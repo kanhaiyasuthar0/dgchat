@@ -39,13 +39,14 @@ const SettingsModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="dark:bg-gray-800 bg-white min-w-[50%] dark:text-white text-gray-900 h-1/2">
+      {/* Adjust min-w-[50%] to be responsive and h-1/2 for smaller screens */}
+      <DialogContent className="dark:bg-gray-800 h-fit bg-white w-full max-w-lg mx-auto p-4 md:min-w-[50%] h-auto md:h-1/2 dark:text-white text-gray-900 rounded-lg">
         <DialogHeader className="text-gray-900 dark:text-white">
           <DialogTitle>Options</DialogTitle>
           <DialogDescription>Configure your preferences.</DialogDescription>
         </DialogHeader>
-        {/* Layout adjustment for side-by-side display with theme compatibility */}
 
+        {/* Conditional rendering based on passed renderComponent */}
         {renderComponent ? (
           renderComponent()
         ) : (

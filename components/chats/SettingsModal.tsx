@@ -31,8 +31,9 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
   };
 
   return (
-    <div className="flex bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white h-full">
-      <div className="w-64 p-5 h-full overflow-auto bg-gray-200 dark:bg-gray-800">
+    <div className="flex flex-col md:flex-row bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-full">
+      <div className="w-full md:w-1/3 lg:w-1/4 p-5 overflow-auto bg-gray-50 dark:bg-gray-800">
+        {/* Sidebar with options... */}
         <ul className="space-y-4">
           <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
@@ -61,7 +62,8 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
           </li>
         </ul>
       </div>
-      <div className="flex-grow p-5 h-full min-h-[250px] bg-white dark:bg-gray-900">
+      <div className="flex-grow p-5 min-h-[250px] bg-white dark:bg-gray-900">
+        {/* Active section content... */}
         {renderSection()}
       </div>
     </div>
