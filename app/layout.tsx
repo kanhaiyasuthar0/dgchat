@@ -11,8 +11,9 @@ const roboto = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Farmer Chat",
-  description: "A chat bot to answer all your farming realted queries",
+  title: "Welcome to Farmer Chat!",
+  description:
+    "FarmChat, powered by Digital Green, connects farmers across the globe, offering a platform for sharing insights, advice, and innovations in agriculture. Join our community to grow together.",
 };
 
 export default function RootLayout({
