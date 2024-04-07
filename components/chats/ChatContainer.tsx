@@ -129,6 +129,72 @@ const ChatContainer = () => {
       // Optionally handle error state here
     }
   }
+  async function fetchAllChatMessages() {
+    console.log("calling fetch all messages");
+    // setChatExchanges([...chatExchanges, newExchange]);
+    // Define the shape of filters with an index signature
+    interface Filters {
+      [key: string]: string | undefined; // This allows any string as a key, and string as a value
+    }
+    const payload: {
+      email_id: string | null;
+    } = {
+      email_id: user?.databaseId!,
+    };
+
+    try {
+      const response = await axios.get(
+        `${"https://sandbox.farmstack.digitalgreen.org"}/ai/chat/chat_history/${
+          user?.databaseId
+        }`
+      );
+      // throw new Error("Simulated Error");
+
+      console.log("🚀 ~ getResponse ~ response:", response);
+
+      // Update the latest exchange with the response
+      // setChatExchanges((currentExchanges) => {
+      //   // Make a shallow copy of the array to ensure immutability
+      //   const updatedExchanges = [...currentExchanges];
+      //   // Check if there are any exchanges and update the last one
+      //   if (updatedExchanges.length > 0) {
+      //     const lastExchange = updatedExchanges.at(-1)!;
+      //     updatedExchanges[updatedExchanges.length - 1] = {
+      //       ...lastExchange,
+      //       response: response?.data.output,
+      //       loading: false,
+      //     };
+      //   }
+      //   return updatedExchanges;
+      // });
+    } catch (error) {
+      setTimeout(() => {
+        setChatExchanges((currentExchanges) => {
+          // Make a shallow copy of the array to ensure immutability
+          const updatedExchanges = [...currentExchanges];
+          // Check if there are any exchanges and update the last one
+          if (updatedExchanges.length > 0) {
+            const lastExchange = updatedExchanges.at(-1)!;
+            updatedExchanges[updatedExchanges.length - 1] = {
+              ...lastExchange,
+              response: {
+                youtube_url: "",
+                query_response: "SOMETHING WENT WRONG",
+                condensed_question: "What can you tell me about wheat blast?",
+                follow_up_questions: [],
+                query: "Tell me about wheat blast",
+              },
+              loading: false,
+            };
+          }
+          // bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+          return updatedExchanges;
+        });
+      }, 3000);
+      console.error("Error sending message:", error);
+      // Optionally handle error state here
+    }
+  }
   useEffect(() => {
     setTimeout(() => {
       if (bottomRef && bottomRef?.current) {
@@ -136,6 +202,9 @@ const ChatContainer = () => {
       }
     }, 0);
   }, [chatExchanges]);
+  useEffect(() => {
+    fetchAllChatMessages();
+  }, [user]);
 
   return (
     <div className="flex shadow rounded-lg flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
