@@ -47,11 +47,10 @@ const ChatPage = () => {
         <ContextMenu>
           <ContextMenuTrigger>
             <Suspense fallback={<div>Loading...</div>}>
-              <ButtonForSidebarToggle
+              <MainChat
                 isSidebarOpen={isSidebarOpen}
                 toggleSidebar={toggleSidebar}
               />
-              <MainChat />
             </Suspense>
           </ContextMenuTrigger>
           <ContextMenuContent>

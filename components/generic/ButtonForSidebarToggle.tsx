@@ -1,5 +1,5 @@
 // ButtonForSidebarToggle.js
-import { CircleX, CrossIcon } from "lucide-react";
+import { CircleX, CrossIcon, Menu } from "lucide-react";
 import React from "react";
 
 const ButtonForSidebarToggle = ({
@@ -16,7 +16,7 @@ const ButtonForSidebarToggle = ({
       aria-controls="sidebar"
       aria-expanded="false"
     >
-      {isSidebarOpen ? <CircleX /> : "Menu"}
+      {isSidebarOpen ? <CircleX /> : <Menu />}
     </button>
   );
 };

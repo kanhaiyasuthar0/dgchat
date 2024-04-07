@@ -127,7 +127,7 @@ const ChatContainer = () => {
   }, [chatExchanges]);
 
   return (
-    <div className="flex flex-col h-full dark:bg-gray-900 bg-gray-100 p-4">
+    <div className="flex flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
       <div className="flex-1 overflow-auto hide-scrollbar">
         {chatExchanges.length > 0 ? (
           chatExchanges.map((exchange) => (
