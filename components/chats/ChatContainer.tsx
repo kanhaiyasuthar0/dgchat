@@ -64,8 +64,8 @@ const ChatContainer = () => {
       filters: {},
     };
 
-    const crop = searchParams.get("crop");
-    const state = searchParams.get("state");
+    const crop = searchParams?.get("crop");
+    const state = searchParams?.get("state");
 
     // Conditionally add `sub_category` if `crop` is defined and not empty
     if (crop) {
