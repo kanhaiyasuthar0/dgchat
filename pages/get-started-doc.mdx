@@ -1,0 +1,46 @@
+import { Bleed } from "nextra-theme-docs";
+import LoginComponent from "@/components/login/LoginComponent";
+import { SessionProvider } from "next-auth/react";
+
+# Welcome to FarmChat by Digital Green
+
+## The Ultimate Platform for Farmers Worldwide
+
+FarmChat brings together the global farming community, offering a space to share insights, discover agricultural innovations, and connect with experts. Powered by Digital Green, we're committed to empowering farmers through technology.
+
+### Key Features
+
+<Bleed>![Landscape](/chat-window.png)</Bleed>
+
+- **Google Authentication**: Simple and secure login with your Google account.
+- **Modern Chat Interface**: A sleek, intuitive chat experience designed for today's farmers.
+- **Extensive Knowledge Base**: Access a vast repository of agricultural wisdom and best practices.
+- **Custom Preferences**: Tailor your chat experience based on crop, language, country, and state.
+- **Responsive Design**: Seamlessly use FarmChat on any device, ensuring you're always connected.
+- **Interactive Learning**: Receive YouTube videos, follow-up questions, and curated content in chat responses.
+- **Personalized Profile Management**: Easily manage your profile and settings right from the chat interface.
+- **Session Management**: Keep track of your conversations and insights with integrated session management.
+
+### Getting Started
+
+<SessionProvider>
+  <LoginComponent />
+</SessionProvider>
+
+1. **Visit the Homepage**: Navigate to `/` to start your FarmChat journey.
+2. **Log In**: Click on "Login with Google" for a hassle-free sign-in experience.
+3. **Customize Your Experience**: After logging in, you're greeted with a simple interface where you can set your preferences for crop, language, country, and more.
+4. **Engage and Learn**: Start chatting to receive tailored advice, videos, and follow-up questions that enrich your farming knowledge.
+5. **Profile and Session Management**: Access profile management and logout options in the bottom left corner, with session management conveniently located at the top left.
+
+### Why FarmChat?
+
+FarmChat isn't just a chat app; it's a companion for the modern farmer. By bridging the gap between traditional knowledge and digital innovation, we're fostering a community where every farmer, regardless of their location or experience, can thrive.
+
+### Join Our Community
+
+Ready to elevate your farming practice? [Sign up today](/) and be part of a global movement towards smarter, more sustainable agriculture.
+
+### Feedback and Support
+
+Your insights fuel our growth. If you have feedback or need support, please reach out through our [Contact Us](https://digitalgreen.org/contact/) page. Together, let's revolutionize farming, one chat at a time.

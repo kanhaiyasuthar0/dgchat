@@ -1,4 +1,5 @@
-import { withNextVideo } from "next-video/process";
+import nextra from "nextra";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -15,4 +16,11 @@ const nextConfig = {
   },
 };
 
-export default withNextVideo(nextConfig);
+const withNextra = nextra({
+  theme: "nextra-theme-docs",
+  themeConfig: "./theme.config.tsx",
+});
+
+export default withNextra(nextConfig);
+
+// export default nextConfig;
