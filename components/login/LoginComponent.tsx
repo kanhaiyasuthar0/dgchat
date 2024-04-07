@@ -11,36 +11,7 @@ import { useState } from "react";
 const LoginComponent = () => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
-  const createUser = async (user: { email: string; displayName: string }) => {
-    if (!user) {
-      console.error("User details not found");
-      return false;
-    }
 
-    const { email, displayName: username } = user;
-
-    try {
-      const response = await axios.post(
-        `${"https://sandbox.farmstack.digitalgreen.org"}/ai/user/`,
-        { email, username },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            // Specify other necessary headers
-          },
-        }
-      );
-
-      console.log("User created:", response.data);
-      localStorage.setItem("userId", response.data.id);
-      // Handle successful user creation, if needed
-      return true;
-    } catch (error) {
-      console.error("Error creating user:", error);
-      // Handle error
-      return false;
-    }
-  };
   if (typeof window !== "undefined" && !localStorage?.getItem("theme")) {
     document.documentElement.classList.add("dark");
     localStorage?.setItem("theme", "dark");
@@ -68,13 +39,6 @@ const LoginComponent = () => {
             setIsLoading(true);
             const response = await signIn("google", { callbackUrl: `/chat` });
             console.log("🚀 ~ onClick={ ~ response:", response);
-            const createUserResponse = await createUser({
-              email: session?.user?.email!,
-              displayName: session?.user?.name!,
-            });
-            if (createUserResponse) {
-              redirect("/chat");
-            }
           } catch (error) {
             console.error(error);
             // redirect("/");
