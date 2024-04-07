@@ -227,7 +227,7 @@ const ThemeCustomization: React.FC<YourComponentProps> = ({
   handleClose: () => void;
 }) => {
   const [theme, setTheme] = useState(
-    typeof window !== "undefined" ? localStorage.theme : "light"
+    typeof window !== "undefined" ? localStorage.theme : "dark"
   );
 
   useEffect(() => {

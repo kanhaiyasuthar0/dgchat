@@ -44,6 +44,10 @@ export default function Home() {
       return false;
     }
   };
+  if (typeof window !== "undefined") {
+    document.documentElement.classList.add("dark");
+    localStorage?.setItem("theme", "dark");
+  }
 
   // checking if sessions exists
   if (session) {

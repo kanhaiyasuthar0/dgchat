@@ -10,6 +10,10 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 const ChatPage = () => {
+  if (typeof window !== "undefined") {
+    document.documentElement.classList.add("dark");
+    localStorage?.setItem("theme", "dark");
+  }
   return (
     <div className="flex h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
       {/* Sidebar container */}
