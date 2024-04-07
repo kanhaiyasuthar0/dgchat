@@ -34,7 +34,7 @@ const MainChat = ({
           className="m-4 text-black dark:text-white flex gap-1 items-center bg-gray-300 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 py-2 px-4 rounded"
         >
           <span className="lg:block hidden">Options</span>
-          <ListFilter size={"20"} />
+          <ListFilter size={"15"} />
         </button>
 
         <Suspense fallback={"Loading..."}>
@@ -47,9 +47,9 @@ const MainChat = ({
 
       {/* Main chat window, taking the full height and centered */}
       <div className="flex-1 flex justify-center items-center h-full">
-        <div className="w-full max-w-4xl h-full flex flex-col bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
+        <div className="w-full max-w-4xl h-full flex flex-col bg-gray-100 dark:bg-gray-800">
           {/* Chat messages display area */}
-          <div className="flex-1 overflow-auto lg:p-4 p-0 bg-white dark:bg-gray-900">
+          <div className="flex-1 overflow-auto lg:p-2 p-0 bg-white dark:bg-gray-900">
             <Suspense fallback={"Loading..."}>
               <ChatContainer />
             </Suspense>

@@ -16,6 +16,14 @@ interface ResponseType {
   follow_up_questions: string[];
   query: string;
 }
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  // Add the databaseId property
+  databaseId?: string; // Using ? to mark it as optional if it might not be present on all User objects
+}
 
 interface IChatExchange {
   id: number;
@@ -25,7 +33,7 @@ interface IChatExchange {
 }
 const ChatContainer = () => {
   const { data: session } = useSession();
-  const user = session?.user;
+  const user = session?.user as User | undefined;
   const searchParams = useSearchParams();
   const [chatExchanges, setChatExchanges] = useState<IChatExchange[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -43,6 +51,7 @@ const ChatContainer = () => {
     interface Filters {
       [key: string]: string | undefined; // This allows any string as a key, and string as a value
     }
+    console.log(user);
     const payload: {
       query: string;
       email_id: string | null;
@@ -50,7 +59,7 @@ const ChatContainer = () => {
       filters: Filters;
     } = {
       query: inputText,
-      email_id: localStorage.getItem("userId"),
+      email_id: user?.databaseId!,
       chain: true,
       filters: {},
     };
@@ -73,6 +82,8 @@ const ChatContainer = () => {
         `${"https://sandbox.farmstack.digitalgreen.org"}/ai/chat/chat_api/`,
         payload
       );
+      // throw new Error("Simulated Error");
+
       console.log("🚀 ~ getResponse ~ response:", response);
 
       // Update the latest exchange with the response
@@ -127,7 +138,7 @@ const ChatContainer = () => {
   }, [chatExchanges]);
 
   return (
-    <div className="flex flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
+    <div className="flex shadow rounded-lg flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
       <div className="flex-1 overflow-auto hide-scrollbar">
         {chatExchanges.length > 0 ? (
           chatExchanges.map((exchange) => (

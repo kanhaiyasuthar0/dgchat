@@ -1,7 +1,7 @@
 "use client";
 // components/UserProfile.js
 import React, { Suspense, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import {
@@ -20,14 +20,16 @@ const UserProfile = () => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const { data: session } = useSession();
-  console.log("🚀 ~ UserProfile ~ session:", session);
-  if (!session) {
-    redirect("/");
-  }
+  // console.log("🚀 ~ UserProfile ~ data:", data);
+  // console.log("🚀 ~ UserProfile ~ session:", session);
+  // if (!session) {
+  //   // redirect("/");
+  // }
   const [showOptions, setShowOptions] = useState(false);
 
   const handleSignOut = async () => {
-    await signOut();
+    signOut({ callbackUrl: "/" });
+    // redirect("/");
   };
 
   function handleSearch(term: string) {
@@ -43,6 +45,9 @@ const UserProfile = () => {
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  // const session = "";
+  if (!session) return <></>;
 
   return (
     <div className="relative">
