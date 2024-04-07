@@ -21,9 +21,9 @@ const Modal = () => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const params = useSearchParams();
-  console.log("🚀 ~ Page ~ params:", params.get("modalfor"));
+  console.log("🚀 ~ Page ~ params:", params?.get("modalfor"));
   // console.log("🚀 ~ Page ~ router:", router);
-  const modalFor = params.get("modalfor")!;
+  const modalFor = params?.get("modalfor")!;
   const [isOpen, setIsOpen] = useState(
     ["language", "crop", "profile", "country", "settings"].includes(modalFor)
   );
@@ -61,12 +61,12 @@ const Modal = () => {
             <DialogHeader>
               <DialogTitle>
                 {" "}
-                {params.get("modalfor")?.toUpperCase()}{" "}
+                {params?.get("modalfor")?.toUpperCase()}{" "}
               </DialogTitle>
               <DialogDescription>
                 This action cannot be undone. This will permanently delete your
                 account and remove your data from our servers.
-                {params.get("modalfor") == "country"
+                {params?.get("modalfor") == "country"
                   ? ""
                   : //   <CountryStateSelector />
                     null}

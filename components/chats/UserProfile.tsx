@@ -33,7 +33,7 @@ const UserProfile = () => {
   };
 
   function handleSearch(term: string) {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams!);
     if (term) {
       params.set("modalfor", term);
     } else {
