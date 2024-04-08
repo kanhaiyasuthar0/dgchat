@@ -31,11 +31,14 @@ interface IChatExchange {
   response?: ResponseType; // Optional since the response will be populated later
   loading?: boolean;
 }
-const ChatContainer = () => {
+const ChatContainer = ({ history }: { history: any }) => {
+  console.log("🚀 ~ ChatContainer ~ history:", history);
   const { data: session } = useSession();
   const user = session?.user as User | undefined;
   const searchParams = useSearchParams();
-  const [chatExchanges, setChatExchanges] = useState<IChatExchange[]>([]);
+  const [chatExchanges, setChatExchanges] = useState<IChatExchange[]>(
+    history ?? []
+  );
   const bottomRef = useRef<HTMLDivElement>(null);
 
   async function getResponse(inputText: string) {
@@ -69,7 +72,10 @@ const ChatContainer = () => {
 
     // Conditionally add `sub_category` if `crop` is defined and not empty
     if (crop) {
-      payload.filters["sub_category"] = crop;
+      payload.filters["sub_category"] = decodeURIComponent(crop);
+    }
+    if (state) {
+      payload.filters["state"] = decodeURIComponent(state);
     }
 
     // Conditionally add `state` if `state` is defined and not empty
@@ -195,6 +201,7 @@ const ChatContainer = () => {
       // Optionally handle error state here
     }
   }
+
   useEffect(() => {
     setTimeout(() => {
       if (bottomRef && bottomRef?.current) {
@@ -203,12 +210,57 @@ const ChatContainer = () => {
     }, 0);
   }, [chatExchanges]);
   useEffect(() => {
-    fetchAllChatMessages();
+    // fetchAllChatMessages();
   }, [user]);
 
+  const [lastSeenPrompt, setLastSeenPrompt] = useState("");
+
+  useEffect(() => {
+    const container = document.querySelector(".chat-container"); // Adjust the selector to target your chat container
+    const handleScroll = () => {
+      // Logic to determine and set the last seen prompt
+      // This might involve calculating which message is at the top
+      // and setting its associated prompt to state
+    };
+
+    container?.addEventListener("scroll", handleScroll);
+
+    return () => container?.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // const [showScrollButton, setShowScrollButton] = useState(false);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+
+  // Function to check scroll position
+  const checkScrollPosition = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget; // CurrentTarget ensures you're getting the div element
+    const maxScroll = target.scrollHeight - target.clientHeight;
+    const currentScroll = target.scrollTop;
+    const distanceFromBottom = maxScroll - currentScroll;
+
+    // Show the "Scroll to Bottom" button if more than a certain distance from the bottom
+    // Adjust 100 as needed depending on your application's needs
+    setShowScrollToBottom(distanceFromBottom > 100);
+  };
   return (
     <div className="flex shadow rounded-lg flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
-      <div className="flex-1 overflow-auto hide-scrollbar">
+      <div
+        className="flex-1 overflow-auto hide-scrollbar relative stick-container"
+        onScroll={checkScrollPosition}
+      >
+        {showScrollToBottom && (
+          <button
+            onClick={scrollToBottom}
+            className="fixed bottom-10 right-10 bg-gray-500 text-white p-2 rounded-full shadow-lg cursor-pointer hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-800 transition duration-300 z-50"
+            aria-label="Scroll to bottom"
+          >
+            ↓
+          </button>
+        )}
         {chatExchanges.length > 0 ? (
           chatExchanges.map((exchange) => (
             <div
@@ -216,7 +268,7 @@ const ChatContainer = () => {
               className="w-full py-2 my-2 dark:text-white text-gray-800"
             >
               {/* User query */}
-              <div className="text-left">
+              <div className="text-left mysticky">
                 <div className="flex gap-5 items-center bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
                   <Avatar className="h-7 w-7">
                     <AvatarImage src={user?.image ?? ""} alt="Avatar" />

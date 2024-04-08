@@ -4,20 +4,33 @@ import ChatContainer from "./ChatContainer";
 import SettingsModal from "./Options";
 import ButtonForSidebarToggle from "../generic/ButtonForSidebarToggle";
 import { ListFilter } from "lucide-react";
+import StateCategorySubCategory from "./StateCategorySubCategory";
+import ThemeCustomization from "../generic/ThemeChanger";
 // import SettingsModal from "./Options";
 
 const MainChat = ({
   toggleSidebar,
   isSidebarOpen,
+  states,
+  history,
 }: {
   toggleSidebar: () => void;
   isSidebarOpen: boolean;
+  states: string[];
+  history: any;
 }) => {
   const [showModal, setShowModal] = useState(false);
   // Placeholder for handling option selection from the modal
   const handleOptionSelect = (option: any) => {
     console.log(option);
     setShowModal(false);
+  };
+
+  // const states = ["State 1", "State 2", "State 3"]; // Example states
+  const categories = {
+    "Category 1": ["Subcategory 1", "Subcategory 2"],
+    "Category 2": ["Subcategory 3", "Subcategory 4"],
+    // Populate dynamically based on selected state
   };
 
   return (
@@ -28,6 +41,9 @@ const MainChat = ({
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
         />
+        {/* <Suspense fallback={"Loading..."}>
+          
+        </Suspense> */}
 
         <button
           onClick={() => setShowModal(true)}
@@ -37,10 +53,15 @@ const MainChat = ({
           <ListFilter size={"15"} />
         </button>
 
+        <div className="absolute right-0 m-4 lg:block hidden">
+          <ThemeCustomization />
+        </div>
+
         <Suspense fallback={"Loading..."}>
           <SettingsModal
             isOpen={showModal}
             handleClose={() => setShowModal(false)}
+            states={states}
           />
         </Suspense>
       </div>
@@ -51,7 +72,7 @@ const MainChat = ({
           {/* Chat messages display area */}
           <div className="flex-1 overflow-auto lg:p-2 p-0 bg-white dark:bg-gray-900">
             <Suspense fallback={"Loading..."}>
-              <ChatContainer />
+              <ChatContainer history={history} />
             </Suspense>
           </div>
         </div>

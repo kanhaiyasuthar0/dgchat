@@ -20,6 +20,7 @@ const UserProfile = () => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const { data: session } = useSession();
+  console.log("🚀 ~ UserProfile ~ session:", session);
   // console.log("🚀 ~ UserProfile ~ data:", data);
   // console.log("🚀 ~ UserProfile ~ session:", session);
   // if (!session) {
@@ -56,11 +57,11 @@ const UserProfile = () => {
           <button className="flex items-center space-x-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 p-2 rounded-full cursor-pointer">
             <Image
               src={session?.user?.image || "/default-avatar.png"}
-              alt="User avatar"
+              alt="User"
               className="w-10 h-10 rounded-full"
               height={40} // Adjust based on your design
               width={40} // Adjust based on your design
-              unoptimized={true} // Consider setting to true if you encounter issues with external images
+              unoptimized={false} // Consider setting to true if you encounter issues with external images
             />
             <span className="max-w-xs truncate text-gray-900 dark:text-white">
               {session?.user?.name || "User"}

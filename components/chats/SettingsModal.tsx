@@ -1,28 +1,33 @@
 import React, { Suspense, useEffect, useState } from "react";
 import CountryStateSelector from "../generic/CountryStateSelector";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import StateCategorySubCategory from "./StateCategorySubCategory";
 
 interface YourComponentProps {
   isOpen?: boolean;
   handleClose: () => void;
+  states?: any;
+  categories?: { key: string[] };
 }
 
 const SettingsDialog: React.FC<YourComponentProps> = ({
   isOpen,
   handleClose,
+  states,
 }) => {
-  const [activeSection, setActiveSection] = useState<string>(
-    "countryCustomization"
-  );
+  const [activeSection, setActiveSection] =
+    useState<string>("stateCropSelection");
 
   const renderSection = () => {
     switch (activeSection) {
+      case "stateCropSelection":
+        return <StateCategorySubCategory states={states} />;
       case "accountPreferences":
         return <AccountPreferences handleClose={handleClose} />;
       case "cropPreferences":
         return <CropSelection handleClose={handleClose} />;
-      case "themeCustomization":
-        return <ThemeCustomization handleClose={handleClose} />;
+      // case "themeCustomization":
+      //   return <ThemeCustomization handleClose={handleClose} />;
       case "countryCustomization":
         return <CountryCustomization handleClose={handleClose} />;
       default:
@@ -37,16 +42,22 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
         <ul className="space-y-4">
           <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
+            onClick={() => setActiveSection("stateCropSelection")}
+          >
+            Crop Preferences
+          </li>
+          <li
+            className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("countryCustomization")}
           >
             Country Preferences
           </li>
-          <li
+          {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("cropPreferences")}
           >
             Crop Settings
-          </li>
+          </li> */}
           <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("accountPreferences")}
@@ -54,12 +65,12 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
             Account Preferences
           </li>
           {/* Commented out Notification Settings for future use */}
-          <li
+          {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("themeCustomization")}
           >
             Theme
-          </li>
+          </li> */}
         </ul>
       </div>
       <div className="flex-grow p-5 min-h-[250px] bg-white dark:bg-gray-900">
@@ -222,68 +233,6 @@ const NotificationSettings: React.FC<YourComponentProps> = ({
     </div>
   </section>
 );
-
-const ThemeCustomization: React.FC<YourComponentProps> = ({
-  handleClose,
-}: {
-  handleClose: () => void;
-}) => {
-  const [theme, setTheme] = useState(
-    typeof window !== "undefined" ? localStorage.theme : "dark"
-  );
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [theme]);
-
-  const toggleTheme = (theme: string) => {
-    setTheme(theme);
-  };
-
-  return (
-    <section className="space-y-4">
-      <div className="flex items-center">
-        <input
-          onClick={() => toggleTheme("light")}
-          value={theme}
-          checked={theme == "light"}
-          type="radio"
-          id="light-theme"
-          name="theme"
-          className="w-4 h-4 text-blue-600 cursor-pointer dark:bg-gray-700 bg-gray-300 border-gray-600 dark:border-gray-600 rounded focus:ring-blue-500"
-        />
-        <label
-          htmlFor="light-theme"
-          className="ml-2 block cursor-pointer text-sm font-medium dark:text-white text-gray-900"
-        >
-          Light
-        </label>
-      </div>
-      <div className="flex items-center">
-        <input
-          checked={theme == "dark"}
-          onClick={() => toggleTheme("dark")}
-          type="radio"
-          id="dark-theme"
-          name="theme"
-          className="w-4 h-4 cursor-pointer text-blue-600 dark:bg-gray-700 bg-gray-300 border-gray-600 dark:border-gray-600 rounded focus:ring-blue-500"
-        />
-        <label
-          htmlFor="dark-theme"
-          className="ml-2 block cursor-pointer text-sm font-medium dark:text-white text-gray-900"
-        >
-          Dark
-        </label>
-      </div>
-    </section>
-  );
-};
 
 const CountryCustomization: React.FC<YourComponentProps> = ({
   handleClose,

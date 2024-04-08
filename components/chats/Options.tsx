@@ -15,10 +15,12 @@ const SettingsModal = ({
   isOpen,
   handleClose,
   renderComponent,
+  states,
 }: {
   isOpen: boolean;
   handleClose: () => void;
   renderComponent?: () => ReactElement;
+  states?: string[];
 }) => {
   const [activeTab, setActiveTab] = useState("country");
 
@@ -50,7 +52,11 @@ const SettingsModal = ({
         {renderComponent ? (
           renderComponent()
         ) : (
-          <SettingsDialog isOpen={isOpen} handleClose={handleClose} />
+          <SettingsDialog
+            isOpen={isOpen}
+            handleClose={handleClose}
+            states={states}
+          />
         )}
       </DialogContent>
     </Dialog>
