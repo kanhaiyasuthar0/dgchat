@@ -30,13 +30,18 @@ interface IChatExchange {
   response?: ResponseType; // Optional since the response will be populated later
   loading?: boolean;
 }
+interface CatSubcatResponse {
+  [key: string]: string[];
+}
 
 const MainChatPage = ({
   states,
   history,
+  allCategories,
 }: {
   states: string[];
   history: any;
+  allCategories: CatSubcatResponse;
 }) => {
   const { data, status, update } = useSession();
   // console.log("🚀 ~ ChatPage ~ data:", data, status, update);
@@ -86,6 +91,7 @@ const MainChatPage = ({
                 toggleSidebar={toggleSidebar}
                 states={states}
                 history={history}
+                allCategories={allCategories}
               />
             </Suspense>
           </ContextMenuTrigger>

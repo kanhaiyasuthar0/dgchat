@@ -2,18 +2,36 @@ import React, { Suspense, useEffect, useState } from "react";
 import CountryStateSelector from "../generic/CountryStateSelector";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import StateCategorySubCategory from "./StateCategorySubCategory";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+interface CatSubcatResponse {
+  [key: string]: string[];
+}
 interface YourComponentProps {
   isOpen?: boolean;
   handleClose: () => void;
   states?: any;
   categories?: { key: string[] };
+  allCategories?: CatSubcatResponse;
+}
+
+interface LanguageOption {
+  label: string;
+  value: string;
 }
 
 const SettingsDialog: React.FC<YourComponentProps> = ({
   isOpen,
   handleClose,
   states,
+  allCategories,
 }) => {
   const [activeSection, setActiveSection] =
     useState<string>("stateCropSelection");
@@ -21,7 +39,12 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
   const renderSection = () => {
     switch (activeSection) {
       case "stateCropSelection":
-        return <StateCategorySubCategory states={states} />;
+        return (
+          <StateCategorySubCategory
+            states={states}
+            allCategories={allCategories}
+          />
+        );
       case "accountPreferences":
         return <AccountPreferences handleClose={handleClose} />;
       case "cropPreferences":
@@ -46,12 +69,12 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
           >
             Crop Preferences
           </li>
-          <li
+          {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("countryCustomization")}
           >
             Country Preferences
-          </li>
+          </li> */}
           {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("cropPreferences")}
@@ -81,46 +104,70 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
   );
 };
 
-const AccountPreferences: React.FC<YourComponentProps> = ({
-  handleClose,
-}: {
+interface YourComponentProps {
   handleClose: () => void;
-}) => (
-  <section className="space-y-4">
-    <div>
-      <label
-        htmlFor="language-select"
-        className="block text-sm font-medium dark:text-white text-gray-900"
-      >
-        Language
-      </label>
-      <select
-        id="language-select"
-        className="mt-1 block w-full p-2 dark:bg-gray-700 bg-gray-200 dark:border-gray-600 border-gray-300 rounded-md shadow-sm focus:outline-none dark:focus:ring-blue-500 focus:ring-blue-300 dark:focus:border-blue-500 focus:border-blue-300"
-      >
-        <option value="en">English</option>
-        <option value="es">Español</option>
-        {/* Add more options as needed */}
-      </select>
-    </div>
-    <div>
-      <label
-        htmlFor="timezone-select"
-        className="block text-sm font-medium dark:text-white text-gray-900"
-      >
-        Time Zone
-      </label>
-      <select
-        id="timezone-select"
-        className="mt-1 block w-full p-2 dark:bg-gray-700 bg-gray-200 dark:border-gray-600 border-gray-300 rounded-md shadow-sm focus:outline-none dark:focus:ring-blue-500 focus:ring-blue-300 dark:focus:border-blue-500 focus:border-blue-300"
-      >
-        <option value="UTC-5">Eastern Time</option>
-        <option value="UTC-8">Pacific Time</option>
-        {/* Add more options as needed */}
-      </select>
-    </div>
-  </section>
-);
+}
+
+interface TimezoneOption {
+  label: string;
+  value: string;
+}
+
+const AccountPreferences: React.FC<YourComponentProps> = ({ handleClose }) => {
+  // State for selected language
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
+  // State for selected timezone
+  const [selectedTimezone, setSelectedTimezone] = useState<string>("UTC-5");
+
+  // Timezone options
+  const timezoneOptions: TimezoneOption[] = [
+    { label: "Eastern Time (UTC-5)", value: "UTC-5" },
+    { label: "Pacific Time (UTC-8)", value: "UTC-8" },
+    // Add more timezones as needed
+  ];
+
+  return (
+    <section className="space-y-4">
+      <div>
+        <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a language" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {[
+                { label: "English", value: "en" },
+                { label: "Hindi", value: "hi" },
+              ].map((language: LanguageOption, index: number) => (
+                <SelectItem key={index} value={language.value}>
+                  {language.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <Select value={selectedTimezone} onValueChange={setSelectedTimezone}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a timezone" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {timezoneOptions.map(
+                (timezone: TimezoneOption, index: number) => (
+                  <SelectItem key={index} value={timezone.value}>
+                    {timezone.label}
+                  </SelectItem>
+                )
+              )}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+    </section>
+  );
+};
 
 // interface YourComponentProps {
 //   handleChange: (selectedCrop: string) => void;

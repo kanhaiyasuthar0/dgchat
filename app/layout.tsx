@@ -4,6 +4,7 @@ import "./globals.css";
 import SessionWrapper from "@/components/generic/SessionWrapper";
 import { Work_Sans } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
+// import { Toaster } from "@/components/ui/sonner";
 
 const roboto = Work_Sans({
   weight: "400",

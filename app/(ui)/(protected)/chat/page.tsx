@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import MainChatPage from "@/components/chats/MainChatPage";
 import { Metadata, ResolvingMetadata } from "next";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 import React from "react";
 
@@ -52,8 +52,17 @@ interface IChatExchange {
   response?: ResponseType; // Optional since the response will be populated later
   loading?: boolean;
 }
-const ChatPage = async () => {
+const ChatPage = async ({
+  searchParams,
+}: {
+  searchParams: { state?: string };
+}) => {
+  console.log("🚀 ~ ChatPage ~ searchParams:", searchParams);
+  // console.log("🚀 ~ ChatPage ~ params:", params);
   const data = await auth();
+  const selectedState = searchParams["state"] || null;
+  // const searchParams = useSearchParams();
+  // console.log("on server123", searchParams?.get("crop"));
   // const data = await auth();
   // if (!data?.user) {
   //   console.log("🚀 ~ ChatPage ~ data:", data?.user);
@@ -103,7 +112,46 @@ const ChatPage = async () => {
     }
   }
 
+  interface CatSubcatResponse {
+    [key: string]: string[];
+  }
+
+  async function fetchCatAndSubcat(
+    selectedState: string
+  ): Promise<CatSubcatResponse> {
+    try {
+      const response = await fetch(
+        `https://sandbox.farmstack.digitalgreen.org/ai/chat/cat_and_subcat/?state=${selectedState}`,
+        {
+          method: "GET", // Change to 'GET' if your API expects a GET request.
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // If it's actually a POST request and requires a body, uncomment the following line:
+          // body: JSON.stringify({ state: selectedState }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data: CatSubcatResponse = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching categories and subcategories:", error);
+      return {};
+    }
+  }
+
   const allStates = await fetchStates();
+  let allCategories = {};
+
+  //get all list of crops
+  if (selectedState) {
+    const response = await fetchCatAndSubcat(selectedState);
+    // console.log("🚀 ~ ChatPage ~ response:", response);
+    allCategories = { ...response };
+  }
+
   const allChatHistory: any = await fetchChatHistory();
 
   function updateKeyInObjects(
@@ -130,18 +178,15 @@ const ChatPage = async () => {
     "output",
     "response"
   );
-  // const historyObj: IChatExchange = {
-  //   id: allChatHistory[0]?.id,
-  //   query: allChatHistory[0].query,
-  //   response: allChatHistory[0].output, // Optional since the response will be populated later
-  // };
-  // console.log("🚀 ~ ChatPage ~ historyObj:", historyObj);
-  // console.log("🚀 ~ ChatPage ~ allChatHistory:", allChatHistory);
-  // console.log("🚀 ~ ChatPage ~ allStates:", allStates);
 
-  // const allCrops = await fetchCatAndSubcat()
-
-  return <MainChatPage states={allStates} history={updatedChatHistory} />;
+  console.log(allCategories, "allCategories");
+  return (
+    <MainChatPage
+      states={allStates}
+      allCategories={allCategories}
+      history={updatedChatHistory}
+    />
+  );
 };
 
 export default ChatPage;

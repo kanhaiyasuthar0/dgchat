@@ -8,16 +8,21 @@ import StateCategorySubCategory from "./StateCategorySubCategory";
 import ThemeCustomization from "../generic/ThemeChanger";
 // import SettingsModal from "./Options";
 
+interface CatSubcatResponse {
+  [key: string]: string[];
+}
 const MainChat = ({
   toggleSidebar,
   isSidebarOpen,
   states,
   history,
+  allCategories,
 }: {
   toggleSidebar: () => void;
   isSidebarOpen: boolean;
   states: string[];
   history: any;
+  allCategories: CatSubcatResponse;
 }) => {
   const [showModal, setShowModal] = useState(false);
   // Placeholder for handling option selection from the modal
@@ -62,6 +67,7 @@ const MainChat = ({
             isOpen={showModal}
             handleClose={() => setShowModal(false)}
             states={states}
+            allCategories={allCategories}
           />
         </Suspense>
       </div>

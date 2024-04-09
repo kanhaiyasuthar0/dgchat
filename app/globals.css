@@ -93,3 +93,7 @@
   top: 0;
   z-index: 1;
 }
+
+.markdown-response a {
+  color: #0000ff !important;
+}

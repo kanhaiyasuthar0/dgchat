@@ -1,4 +1,5 @@
 // import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,6 +27,7 @@ Readonly<{
   return (
     <>
       {children}
+      <Toaster />
 
       {/* {modal} */}
     </>

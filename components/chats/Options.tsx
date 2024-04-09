@@ -11,16 +11,22 @@ import SettingsDialog from "./SettingsModal";
 
 // Import or define LanguageSelector and CropSelector components
 
+interface CatSubcatResponse {
+  [key: string]: string[];
+}
+
 const SettingsModal = ({
   isOpen,
   handleClose,
   renderComponent,
   states,
+  allCategories,
 }: {
   isOpen: boolean;
   handleClose: () => void;
   renderComponent?: () => ReactElement;
   states?: string[];
+  allCategories?: CatSubcatResponse;
 }) => {
   const [activeTab, setActiveTab] = useState("country");
 
@@ -56,6 +62,7 @@ const SettingsModal = ({
             isOpen={isOpen}
             handleClose={handleClose}
             states={states}
+            allCategories={allCategories}
           />
         )}
       </DialogContent>

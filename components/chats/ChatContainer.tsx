@@ -246,20 +246,23 @@ const ChatContainer = ({ history }: { history: any }) => {
     // Adjust 100 as needed depending on your application's needs
     setShowScrollToBottom(distanceFromBottom > 100);
   };
+
   return (
-    <div className="flex shadow rounded-lg flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
+    <div className="flex shadow border rounded-lg flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
       <div
-        className="flex-1 overflow-auto hide-scrollbar relative stick-container"
+        className="flex-1 overflow-auto rounded-lg hide-scrollbar relative stick-container"
         onScroll={checkScrollPosition}
       >
         {showScrollToBottom && (
-          <button
-            onClick={scrollToBottom}
-            className="fixed bottom-10 right-10 bg-gray-500 text-white p-2 rounded-full shadow-lg cursor-pointer hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-800 transition duration-300 z-50"
-            aria-label="Scroll to bottom"
-          >
-            ↓
-          </button>
+          <section className="space-y-4">
+            <button
+              onClick={scrollToBottom}
+              className="fixed right-8 bottom-10 bg-gray-500 dark:text-white  ease-in-out text-white p-3 rounded-full shadow-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 dark:bg-gray-500 transition duration-300 z-50"
+              aria-label="Scroll to bottom"
+            >
+              ↓
+            </button>
+          </section>
         )}
         {chatExchanges.length > 0 ? (
           chatExchanges.map((exchange) => (

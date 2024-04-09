@@ -1,6 +1,11 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import React, { useEffect, useState } from "react";
 // import Select from "react-select";
 // Assuming these are your state and categories data structures
 import {
@@ -12,12 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 // interface StateOption {
 
 // }
 
+interface CatSubcatResponse {
+  [key: string]: string[];
+}
 interface MyComponentProps {
   states: any; // Preferably use a more specific type instead of 'any'
+  allCategories?: CatSubcatResponse;
 }
 
 interface Categories {
@@ -52,17 +62,29 @@ const customStyles = {
   }),
 };
 
-const StateCategorySubCategory: React.FC<MyComponentProps> = ({ states }) => {
-  const [selectedState, setSelectedState] = useState<string | null>("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Categories>({});
-  console.log("🚀 ~ categories:", categories);
+const StateCategorySubCategory: React.FC<MyComponentProps> = ({
+  states,
+  allCategories,
+}) => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  //   console.log(searchParams);
+  const [selectedState, setSelectedState] = useState<string | null>(
+    searchParams && searchParams.get("state")
+      ? decodeURIComponent(searchParams.get("state")!)
+      : ""
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    searchParams && searchParams.get("crop")
+      ? decodeURIComponent(searchParams?.get("crop")!)
+      : ""
+  );
+  const [categories, setCategories] = useState<Categories>(allCategories || {});
+  //   console.log("🚀 ~ categories:", categories);
 
   const { replace } = useRouter();
-  const pathname = usePathname();
-  interface CatSubcatResponse {
-    [key: string]: string[];
-  }
+  console.log("🚀 ~ allCategories: from server", allCategories);
 
   // fetch categories and subcategories depending on the selected state of the particular country
   async function fetchCatAndSubcat(
@@ -91,24 +113,19 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({ states }) => {
     }
   }
 
+  const [isLoading, setIsLoading] = useState(false);
   // Function to handle state change
   const handleStateChange = async (e: string) => {
+    setIsLoading(true);
     console.log(e);
     const newState = e;
     setSelectedState(newState);
-
-    const params = new URLSearchParams(window.location.search);
-    if (newState) {
-      params.set("state", encodeURIComponent(newState));
-    } else {
-      params.delete("state");
-    }
-    replace(`${pathname}?${params.toString()}`);
 
     const response = await fetchCatAndSubcat(newState);
     setCategories(response);
     // Reset category selection
     setSelectedCategory("");
+    setIsLoading(false);
     // Here, you would also trigger the fetching of categories based on the selected state
   };
 
@@ -118,16 +135,59 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({ states }) => {
     console.log("🚀 ~ handleCategoryChange ~ selectedCrop:", selectedCrop);
     setSelectedCategory(selectedCrop);
 
-    const params = new URLSearchParams(window.location.search);
-    if (selectedCrop) {
-      params.set("crop", encodeURIComponent(selectedCrop));
-    } else {
-      params.delete("crop");
-    }
-    replace(`${pathname}?${params.toString()}`);
     // Here, you might want to do something with the selected category
   };
   console.log(states, "states in client");
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    const params = new URLSearchParams(window.location.search);
+    console.log("🚀 ~ handleSave ~ params:", params);
+    if (selectedState) {
+      params.set("state", encodeURIComponent(selectedState));
+    } else {
+      params.delete("state");
+      return;
+    }
+
+    if (selectedCategory) {
+      params.set("crop", encodeURIComponent(selectedCategory));
+    } else {
+      params.delete("crop");
+      return;
+    }
+
+    setIsLoading(false);
+
+    // router.replace(
+    //   {
+    //     pathname: window.location.,
+    //   }
+    //   //     query: {
+    //   //       ...router.query,
+    //   //       state: selectedState,
+    //   //       crop: selectedCategory,
+    //   //     }, // Spread the existing query params and add/update "saved"
+    //   //   },
+    //   //   undefined,
+    //   //   { shallow: true }
+    // );
+
+    // router.push(
+
+    // ); // Sh
+
+    replace(`${pathname}?${params.toString()}`);
+    toast("Crop selection done.");
+
+    // router.push();
+
+    // router.refresh();
+  };
+
+  //   useEffect(()=>{
+
+  //   })
 
   return (
     <div className="space-y-4 flex flex-col shadow-lg">
@@ -177,10 +237,18 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({ states }) => {
         </select>
       )} */}
 
-      {selectedState && (
-        <Select value={selectedCategory!} onValueChange={handleCategoryChange}>
+      {
+        <Select
+          disabled={!selectedState || isLoading}
+          value={selectedCategory!}
+          onValueChange={handleCategoryChange}
+        >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a state" />
+            <SelectValue
+              placeholder={
+                isLoading ? "Fetching categories..." : "Select a category"
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -206,7 +274,15 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({ states }) => {
             </SelectGroup>
           </SelectContent>
         </Select>
-      )}
+      }
+
+      <button
+        disabled={!selectedState && !selectedCategory}
+        onClick={handleSave}
+        className="mt-4 w-full dark:text-white text-white bg-gray-600 hover:bg-black-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-black-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+      >
+        {isLoading ? "Loading..." : "Save"}
+      </button>
     </div>
   );
 };

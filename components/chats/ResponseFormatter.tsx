@@ -55,27 +55,63 @@ const ResponseFormatter = ({
       return null;
     }
   }
+
+  function preprocessText(text: string | undefined) {
+    if (!text) return "";
+
+    // Replace single newlines with double newlines to ensure Markdown recognizes paragraph breaks.
+    text = text.replace(/\n/g, "\n\n");
+
+    // Escape special Markdown characters that should be displayed as literals
+    // You might want to refine this list based on your specific needs
+    const specialCharacters = [
+      "\\",
+      "`",
+      "*",
+      "_",
+      "{",
+      "}",
+      "[",
+      "]",
+      "(",
+      ")",
+      "#",
+      "+",
+      "-",
+      ".",
+      "!",
+    ];
+    specialCharacters.forEach((char) => {
+      const escapedChar = `\\${char}`;
+      text = text?.split(char).join(escapedChar);
+    });
+
+    // Convert URLs to Markdown links (if not already formatted as Markdown)
+    // This is a simplistic approach; consider using a library for more robust URL detection
+    text = text.replace(/https?:\/\/[^\s]+/g, (url) => `[${url}](${url})`);
+
+    return text;
+  }
+
   return (
-    <div className="text-left mt-2">
+    <div className="text-pretty mt-2">
       <div className="w-full flex flex-col gap-2 align-middle dark:bg-gray-700 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
-        <div className="flex gap-5 items-start">
-          <div className="">
+        <div className="flex gap-5">
+          <span className=" mr-1">
             <Avatar className="h-7 w-7">
               <AvatarImage
-                height={"10"}
-                width={10}
+                height={"8"}
+                width={8}
                 src="https://github.com/shadcn.png"
               />
               <AvatarFallback>FC</AvatarFallback>
             </Avatar>{" "}
-          </div>
-          <Markdown>{exchange?.query_response}</Markdown>
-          {/* <button
-            onClick={() => copyToClipboard(exchange?.query_response || "")}
-            className="ml-4 w-fit px-2 py-1 text-xs text-gray-600 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded"
-          >
-            <RxClipboardCopy />
-          </button> */}
+          </span>
+          <span>
+            <Markdown className="markdown-response leading-loose">
+              {preprocessText(exchange?.query_response)}
+            </Markdown>
+          </span>
         </div>
 
         <div className="flex-col pl-14">

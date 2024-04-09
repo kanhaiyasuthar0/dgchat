@@ -62,7 +62,7 @@ const ThemeCustomization: React.FC = ({}: //   handleClose,
         onClick={() => toggleTheme(theme == "light" ? "dark" : "light")}
         className="p-2 transition duration-500 ease-in-out rounded-full text-gray-600 bg-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
       >
-        {theme === "light" ? "🌙" : "☀️"}
+        {theme === "dark" ? "☀️" : "🌙"}
       </button>
     </section>
   );
