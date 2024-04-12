@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ChatContextProvider } from "@/components/chats/ChatContext";
 
 export const metadata: Metadata = {
   title: "Farmer Chat App",
@@ -10,5 +11,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return <ChatContextProvider>{children}</ChatContextProvider>;
 }

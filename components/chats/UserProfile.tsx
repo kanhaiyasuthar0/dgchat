@@ -14,6 +14,7 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import SettingsModal from "./Options";
 import OtherSettings from "./OtherSettings";
+import { LogIn } from "lucide-react";
 const UserProfile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const searchParams = useSearchParams();
@@ -48,7 +49,13 @@ const UserProfile = () => {
   };
 
   // const session = "";
-  if (!session) return <></>;
+  if (!session)
+    return (
+      <Link href={"/"} className="flex gap-2">
+        {" "}
+        <LogIn /> Login
+      </Link>
+    );
 
   return (
     <div className="relative">

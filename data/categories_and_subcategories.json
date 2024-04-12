@@ -1,0 +1,30 @@
+{
+  "Government": [
+    "Agriculture Department",
+    "Horticulture Mission",
+    "Livestock and Animal Husbandry",
+    "Forestry Department",
+    "Fisheries Department",
+    "Soil Conservation Department",
+    "Water Resources Department",
+    "University ",
+    "Extension Department"
+  ],
+  "Private": [
+    "Seed Companies",
+    "Machinery and Equipment",
+    "Solar",
+    "Poly Houses",
+    "Fertilizer Manufacturers",
+    "Natural Farming",
+    "Agro-technology Companies",
+    "Agri-Input Suppliers",
+    "Agro-Processing Units",
+    "Agri-Tourism Centers",
+    "Farm Management Services",
+    "Agricultural Finance"
+  ],
+  "NGO": ["National", "International"],
+  "Mentors": ["Lead Farmers and Influencers", "Sustainable Farming Mentors"],
+  "FPOs and Coops": ["FPO"]
+}

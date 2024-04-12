@@ -1,4 +1,6 @@
+"use client";
 // ButtonForSidebarToggle.js
+
 import { CircleX, CrossIcon, Menu } from "lucide-react";
 import React from "react";
 
@@ -6,8 +8,8 @@ const ButtonForSidebarToggle = ({
   toggleSidebar,
   isSidebarOpen,
 }: {
-  toggleSidebar: () => void;
-  isSidebarOpen: boolean;
+  toggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
 }) => {
   return (
     <button

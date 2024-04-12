@@ -2,6 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { Button } from "../ui/button";
 import Prepopulate from "./Prepulate";
 import Markdown from "react-markdown";
+import ReadAloudButton from "../generic/ReadAloudButton";
+import { ClipboardCopy, ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
+import { toast } from "sonner";
 // import { RxClipboardCopy } from "react-icons/rx";
 const ResponseFormatter = ({
   exchange,
@@ -15,7 +18,7 @@ const ResponseFormatter = ({
     follow_up_questions: string[];
     query: string;
   };
-  getResponse: (inputString: string) => void;
+  getResponse: (inputString: string, file?: File) => any;
   copyToClipboard?: (inputString: string) => void;
 }) => {
   console.log("🚀 ~ copyToClipboard:", copyToClipboard);
@@ -93,6 +96,8 @@ const ResponseFormatter = ({
     return text;
   }
 
+  const processResponse = preprocessText(exchange?.query_response);
+
   return (
     <div className="text-pretty mt-2">
       <div className="w-full flex flex-col gap-2 align-middle dark:bg-gray-700 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
@@ -109,11 +114,11 @@ const ResponseFormatter = ({
           </span>
           <span>
             <Markdown className="markdown-response leading-loose">
-              {preprocessText(exchange?.query_response)}
+              {processResponse}
             </Markdown>
           </span>
         </div>
-
+        {/* <ReadAloudButton text={processResponse} /> */}
         <div className="flex-col pl-14">
           {exchange?.youtube_url && (
             <div className="relative mt-2 w-full max-w-xl mx-auto">
@@ -137,6 +142,22 @@ const ResponseFormatter = ({
               </div>
             </div>
           )}
+
+          {/* showing options */}
+          <div className="flex justify-end gap-1 mt-2">
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
+              <Volume2 onClick={() => toast("Starting...")} size={15} />
+            </div>
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
+              <ClipboardCopy onClick={() => toast("Copied")} size={15} />
+            </div>
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
+              <ThumbsUp onClick={() => toast("Liked!")} size={15} />
+            </div>
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
+              <ThumbsDown onClick={() => toast("Disliked!")} size={15} />
+            </div>
+          </div>
 
           {/* Follow-up Questions */}
           {exchange?.follow_up_questions &&
