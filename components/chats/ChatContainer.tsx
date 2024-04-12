@@ -61,8 +61,8 @@ const ChatContainer = ({ history }: { history: any }) => {
 
     // const crop = searchParams?.get("crop");
     const crop = localStorage?.subcat;
-    const state = JSON.parse(localStorage?.state);
-    const city = JSON.parse(localStorage?.city);
+    const state = localStorage?.state ? JSON.parse(localStorage?.state) : "";
+    const city = localStorage?.state ? JSON.parse(localStorage?.city) : "";
     const village = localStorage?.village;
 
     if (crop) {
