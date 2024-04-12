@@ -1,3 +1,4 @@
+"use client";
 import React, { ReactElement, ReactNode, useState } from "react";
 import {
   Dialog,
@@ -23,7 +24,7 @@ const SettingsModal = ({
   allCategories,
 }: {
   isOpen: boolean;
-  handleClose: () => void;
+  handleClose?: () => void;
   renderComponent?: () => ReactElement;
   states?: string[];
   allCategories?: CatSubcatResponse;
@@ -48,8 +49,8 @@ const SettingsModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       {/* Adjust min-w-[50%] to be responsive and h-1/2 for smaller screens */}
-      <DialogContent className="dark:bg-gray-800 h-fit bg-white w-full max-w-lg mx-auto p-4 md:min-w-[50%] h-auto md:h-1/2 dark:text-white text-gray-900 rounded-lg">
-        <DialogHeader className="text-gray-900 dark:text-white">
+      <DialogContent className="dark:bg-gray-800 bg-white w-fit max-w-lg mx-auto p-4 md:min-w-[50%] h-fit  dark:text-white text-gray-900 rounded-lg">
+        <DialogHeader className="text-gray-900 dark:text-white h-fit">
           <DialogTitle>Options</DialogTitle>
           <DialogDescription>Configure your preferences.</DialogDescription>
         </DialogHeader>

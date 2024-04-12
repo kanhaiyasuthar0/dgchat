@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AssistComponent from "../generic/AssisComponent";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { File } from "buffer";
+import Image from "next/image";
 
 interface ResponseType {
   youtube_url: string;
@@ -30,6 +32,7 @@ interface IChatExchange {
   query: string;
   response?: ResponseType; // Optional since the response will be populated later
   loading?: boolean;
+  image?: string;
 }
 const ChatContainer = ({ history }: { history: any }) => {
   console.log("🚀 ~ ChatContainer ~ history:", history);
@@ -41,42 +44,46 @@ const ChatContainer = ({ history }: { history: any }) => {
   );
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  async function getResponse(inputText: string) {
-    // console.log(crop, language, bot, " crop, language, bot");
+  async function getResponse(inputText: string, image?: Blob) {
     const newExchange: IChatExchange = {
       id: chatExchanges.length + 1,
       query: inputText,
-      loading: true, // Initially set to loading
+      loading: true,
+      image: image ? URL.createObjectURL(image) : "",
     };
 
     setChatExchanges([...chatExchanges, newExchange]);
-    // Define the shape of filters with an index signature
-    interface Filters {
-      [key: string]: string | undefined; // This allows any string as a key, and string as a value
-    }
-    console.log(user);
-    const payload: {
-      query: string;
-      email_id: string | null;
-      chain: boolean;
-      filters: Filters;
-    } = {
-      query: inputText,
-      email_id: user?.databaseId!,
-      chain: true,
-      filters: {},
-    };
 
-    const crop = searchParams?.get("crop");
-    const state = searchParams?.get("state");
+    const formData = new FormData();
+    formData.append("query", inputText);
+    formData.append("email_id", user?.databaseId || "");
+    formData.append("chain", "true");
 
-    // Conditionally add `sub_category` if `crop` is defined and not empty
+    // const crop = searchParams?.get("crop");
+    const crop = localStorage?.subcat;
+    const state = JSON.parse(localStorage?.state);
+    const city = JSON.parse(localStorage?.city);
+    const village = localStorage?.village;
+
     if (crop) {
-      payload.filters["sub_category"] = decodeURIComponent(crop);
+      formData.append(
+        "filters",
+        JSON.stringify({ sub_category: decodeURIComponent(crop) })
+      );
     }
     if (state) {
-      payload.filters["state"] = decodeURIComponent(state);
+      formData.append("state", state?.name);
     }
+    if (city) {
+      formData.append("district", city?.name);
+    }
+    if (village) {
+      formData.append("village", village);
+    }
+    if (image) {
+      formData.append("image", image); // Add image file to formData
+    }
+    console.log(formData);
 
     // Conditionally add `state` if `state` is defined and not empty
     // if (state) {
@@ -85,18 +92,19 @@ const ChatContainer = ({ history }: { history: any }) => {
 
     try {
       const response = await axios.post(
-        `${"https://sandbox.farmstack.digitalgreen.org"}/ai/chat/chat_api/`,
-        payload
+        "https://sandbox.farmstack.digitalgreen.org/ai/chat/chat_api/",
+        formData, // Sending formData instead of JSON
+        {
+          headers: {
+            // Don't set Content-Type here, let the browser set it
+          },
+        }
       );
-      // throw new Error("Simulated Error");
 
       console.log("🚀 ~ getResponse ~ response:", response);
 
-      // Update the latest exchange with the response
       setChatExchanges((currentExchanges) => {
-        // Make a shallow copy of the array to ensure immutability
         const updatedExchanges = [...currentExchanges];
-        // Check if there are any exchanges and update the last one
         if (updatedExchanges.length > 0) {
           const lastExchange = updatedExchanges.at(-1)!;
           updatedExchanges[updatedExchanges.length - 1] = {
@@ -272,14 +280,31 @@ const ChatContainer = ({ history }: { history: any }) => {
             >
               {/* User query */}
               <div className="text-left mysticky">
-                <div className="flex gap-5 items-center bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
-                  <Avatar className="h-7 w-7">
-                    <AvatarImage src={user?.image ?? ""} alt="Avatar" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  {exchange.query}
+                <div className="flex items-center justify-between bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
+                  <div className="flex gap-5 items-center flex-1">
+                    <Avatar className="h-7 w-7">
+                      <AvatarImage src={user?.image ?? ""} alt="FC" />
+                      <AvatarFallback>FC</AvatarFallback>
+                    </Avatar>
+                    {exchange.query}
+                  </div>
+
+                  {exchange.image && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">Attachment:</span>
+                      <span className="border">
+                        <Image
+                          height={40}
+                          width={40}
+                          src={exchange.image}
+                          alt={exchange.query}
+                        />
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
+
               {/* Bot response */}
               {exchange?.loading ? (
                 <div className="text-left mt-2">

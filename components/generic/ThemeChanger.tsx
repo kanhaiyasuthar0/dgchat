@@ -1,25 +1,36 @@
+"use client";
 import { useEffect, useState } from "react";
 
 const ThemeCustomization: React.FC = ({}: //   handleClose,
 {
   //   handleClose: () => void;
 }) => {
-  const [theme, setTheme] = useState(
-    typeof window !== "undefined" ? localStorage.theme : "dark"
-  );
+  const [theme, setTheme] = useState("light");
+
+  const handleThemeChange = () => {};
 
   useEffect(() => {
-    if (theme === "dark") {
+    if (typeof window !== "undefined" && localStorage?.theme) {
+      setTheme(localStorage?.theme);
+    }
+    if (localStorage?.theme === "dark") {
       document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
+      localStorage?.setItem("theme", "dark");
     } else {
       document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+      localStorage?.setItem("theme", "light");
     }
-  }, [theme]);
+  }, []);
 
   const toggleTheme = (theme: string) => {
     setTheme(theme);
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+      localStorage?.setItem("theme", "dark");
+    } else {
+      document?.documentElement.classList.remove("dark");
+      localStorage?.setItem("theme", "light");
+    }
   };
 
   return (

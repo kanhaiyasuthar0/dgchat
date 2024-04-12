@@ -5,7 +5,7 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // import Select from "react-select";
 // Assuming these are your state and categories data structures
 import {
@@ -18,6 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { ChatContext } from "./ChatContext";
+import { PuffLoader } from "react-spinners";
 // interface StateOption {
 
 // }
@@ -69,28 +71,91 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  // const { categories } = useContext(ChatContext);
+  // console.log("🚀 ~ isOpen:", isOpen);
   //   console.log(searchParams);
-  const [selectedState, setSelectedState] = useState<string | null>(
-    searchParams && searchParams.get("state")
-      ? decodeURIComponent(searchParams.get("state")!)
-      : ""
-  );
+  // const [selectedState, setSelectedState] = useState<string | null>(
+  //   searchParams && searchParams.get("state")
+  //     ? decodeURIComponent(searchParams.get("state")!)
+  //     : localStorage?.getItem("state") ?? ""
+  // );
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    searchParams && searchParams.get("category")
+      ? decodeURIComponent(searchParams?.get("category")!)
+      : localStorage?.getItem("category") ?? ""
+  );
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(
     searchParams && searchParams.get("crop")
       ? decodeURIComponent(searchParams?.get("crop")!)
-      : ""
+      : localStorage?.getItem("subcat") ?? ""
   );
-  const [categories, setCategories] = useState<Categories>(allCategories || {});
-  //   console.log("🚀 ~ categories:", categories);
+
+  const [mainCategories, setMainCategories] = useState<any>([]);
+
+  const [subcategories, setSubcategories] = useState(
+    searchParams && searchParams.get("category")
+      ? mainCategories[searchParams.get("category") || ""]
+      : []
+  );
 
   const { replace } = useRouter();
-  console.log("🚀 ~ allCategories: from server", allCategories);
 
   // fetch categories and subcategories depending on the selected state of the particular country
-  async function fetchCatAndSubcat(
-    selectedState: string
-  ): Promise<CatSubcatResponse> {
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Function to handle category change
+  const handleCategoryChange = (e: string) => {
+    const selectedCrop = e;
+    setSelectedCategory(selectedCrop);
+    localStorage.setItem("category", selectedCrop);
+    setSubcategories(mainCategories[selectedCrop]);
+  };
+  const handleSubCategoryChange = (e: string) => {
+    const selectedCrop = e;
+    localStorage.setItem("subcat", selectedCrop);
+    setSelectedSubCategory(selectedCrop);
+  };
+
+  // useEffect(() => {
+  //   if (typeof window !== undefined) {
+  //     setSelectedSubCategory(localStorage?.getItem("subcat") ?? "");
+  //   }
+  // }, [selectedCategory]);
+
+  console.log(states, "states in client");
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    const params = new URLSearchParams(window.location.search);
+    console.log("🚀 ~ handleSave ~ params:", params);
+
+    if (selectedCategory) {
+      params.set("category", encodeURIComponent(selectedCategory));
+    } else {
+      params.delete("category");
+      return;
+    }
+
+    if (selectedSubCategory) {
+      params.set("crop", encodeURIComponent(selectedSubCategory));
+    } else {
+      params.delete("crop");
+      return;
+    }
+
+    setIsLoading(false);
+
+    replace(`${pathname}?${params.toString()}`);
+    toast(`Selection done`, {
+      description: `Category : ${selectedCategory}, SubCategory : ${selectedSubCategory}`,
+    });
+  };
+
+  async function fetchCatAndSubcat(selectedState: string) {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `https://sandbox.farmstack.digitalgreen.org/ai/chat/cat_and_subcat/?state=${selectedState}`,
         {
@@ -106,183 +171,107 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
         throw new Error("Network response was not ok");
       }
       const data: CatSubcatResponse = await response.json();
-      return data;
+      //   return data;
+      setMainCategories(data);
+      console.log(data, localStorage?.getItem("category"), "yaha");
+      let selectedCrop = localStorage?.getItem("category");
+      if (selectedCrop) {
+        setSubcategories(data[selectedCrop]);
+      }
+      let selectedSubCat = localStorage?.getItem("subcat");
+      if (selectedSubCat) {
+        setSelectedSubCategory(selectedSubCat);
+      }
+      // if (searchParams?.get("category") || localStorage?.getItem("category")) {
+      //   setSubcategories(
+      //     data[
+      //       earchParams?.get("category") || localStorage?.getItem("category")
+      //     ]
+      //   );
+      //   if (localStorage?.getItem("subcat")) {
+      //     setSelectedSubCategory(localStorage?.getItem("subcat"));
+      //   }
+      // }
+      // return data;
     } catch (error) {
       console.error("Error fetching categories and subcategories:", error);
-      return {};
+      // return {};
+    } finally {
+      setIsLoading(false);
     }
   }
 
-  const [isLoading, setIsLoading] = useState(false);
-  // Function to handle state change
-  const handleStateChange = async (e: string) => {
-    setIsLoading(true);
-    console.log(e);
-    const newState = e;
-    setSelectedState(newState);
-
-    const response = await fetchCatAndSubcat(newState);
-    setCategories(response);
-    // Reset category selection
-    setSelectedCategory("");
-    setIsLoading(false);
-    // Here, you would also trigger the fetching of categories based on the selected state
-  };
-
-  // Function to handle category change
-  const handleCategoryChange = (e: string) => {
-    const selectedCrop = e;
-    console.log("🚀 ~ handleCategoryChange ~ selectedCrop:", selectedCrop);
-    setSelectedCategory(selectedCrop);
-
-    // Here, you might want to do something with the selected category
-  };
-  console.log(states, "states in client");
-
-  const handleSave = async () => {
-    setIsLoading(true);
-    const params = new URLSearchParams(window.location.search);
-    console.log("🚀 ~ handleSave ~ params:", params);
-    if (selectedState) {
-      params.set("state", encodeURIComponent(selectedState));
-    } else {
-      params.delete("state");
-      return;
+  useEffect(() => {
+    console.log("calling useeffect");
+    if (searchParams?.get("state") || localStorage?.getItem("state")) {
+      const data = fetchCatAndSubcat(
+        JSON.parse(localStorage?.getItem("state") || "").name!
+      );
     }
-
-    if (selectedCategory) {
-      params.set("crop", encodeURIComponent(selectedCategory));
-    } else {
-      params.delete("crop");
-      return;
-    }
-
-    setIsLoading(false);
-
-    // router.replace(
-    //   {
-    //     pathname: window.location.,
-    //   }
-    //   //     query: {
-    //   //       ...router.query,
-    //   //       state: selectedState,
-    //   //       crop: selectedCategory,
-    //   //     }, // Spread the existing query params and add/update "saved"
-    //   //   },
-    //   //   undefined,
-    //   //   { shallow: true }
-    // );
-
-    // router.push(
-
-    // ); // Sh
-
-    replace(`${pathname}?${params.toString()}`);
-    toast("Crop selection done.");
-
-    // router.push();
-
-    // router.refresh();
-  };
-
-  //   useEffect(()=>{
-
-  //   })
+  }, []);
 
   return (
-    <div className="space-y-4 flex flex-col shadow-lg">
-      {/* <select
-        onChange={handleStateChange}
-        value={selectedState}
-        className="w-[1/2] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      >
-        <option value="">Select State</option>
-        
-      </select> */}
+    <div className="space-y-4 flex flex-col p-4 shadow-lg h-full">
+      {isLoading ? (
+        <div className="h-full w-full flex items-center justify-center">
+          <PuffLoader loading color="black" />
+        </div>
+      ) : (
+        <>
+          <div>
+            <Select
+              value={selectedCategory!}
+              onValueChange={handleCategoryChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {Object.keys(mainCategories)?.map((category, index) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <Select value={selectedState!} onValueChange={handleStateChange}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select a state" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {/* <SelectLabel>States</SelectLabel> */}
-            {states?.map((state: string, index: number) => (
-              <SelectItem key={index} value={state}>
-                {" "}
-                {state}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-
-      {/* <Select
-        options={states ?? []}
-        value={selectedState}
-        onChange={handleStateChange}
-        styles={customStyles}
-        classNamePrefix="react-select"
-        placeholder="Select a country..."
-        className="dark:text-gray-200 text-gray-800"
-      /> */}
-
-      {/* {selectedState && (
-        <select
-          onChange={handleCategoryChange}
-          value={selectedCategory}
-          className="w-[1/2] px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        >
-          <option value="">Select Category</option>
-        </select>
-      )} */}
-
-      {
-        <Select
-          disabled={!selectedState || isLoading}
-          value={selectedCategory!}
-          onValueChange={handleCategoryChange}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue
-              placeholder={
-                isLoading ? "Fetching categories..." : "Select a category"
-              }
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {/* <SelectLabel>States</SelectLabel> */}
-              {/* {states?.map((state, index) => (
-             
-                {" "}
-                {state}
-             
-            ))} */}
-
-              {Object.keys(categories)?.map((category, index) => (
-                <SelectGroup key={index}>
-                  {categories[category]?.map(
-                    (subcategory: string, subIndex: number) => (
-                      <SelectItem key={subIndex} value={subcategory}>
-                        {subcategory}
-                      </SelectItem>
-                    )
+          {
+            <Select
+              disabled={!selectedCategory}
+              value={selectedSubCategory!}
+              onValueChange={handleSubCategoryChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={"Select a category"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {subcategories?.map(
+                    (subcategory: string, subIndex: string) => {
+                      return (
+                        <SelectItem key={subIndex} value={subcategory}>
+                          {subcategory}
+                        </SelectItem>
+                      );
+                    }
                   )}
                 </SelectGroup>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      }
+              </SelectContent>
+            </Select>
+          }
 
-      <button
-        disabled={!selectedState && !selectedCategory}
-        onClick={handleSave}
-        className="mt-4 w-full dark:text-white text-white bg-gray-600 hover:bg-black-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-black-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-      >
-        {isLoading ? "Loading..." : "Save"}
-      </button>
+          <button
+            disabled={!selectedCategory && !selectedSubCategory}
+            onClick={handleSave}
+            className="mt-4 w-full dark:text-white text-white bg-gray-600 hover:bg-black-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-black-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+          >
+            {isLoading ? "Loading..." : "Save"}
+          </button>
+        </>
+      )}
     </div>
   );
 };

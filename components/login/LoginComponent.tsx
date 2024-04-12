@@ -12,19 +12,25 @@ const LoginComponent = () => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
-  if (typeof window !== "undefined" && !localStorage?.getItem("theme")) {
-    document.documentElement.classList.add("dark");
+  // if (typeof window !== "undefined" && !localStorage?.getItem("theme")) {
+  //   document.documentElement.classList.add("light");
+  //   localStorage?.setItem("theme", "light");
+  // }
+
+  if (typeof window !== "undefined" && localStorage?.theme === "dark") {
+    document?.documentElement.classList.add("dark");
     localStorage?.setItem("theme", "dark");
+  } else {
+    // document?.documentElement.classList.remove("dark");
+    // localStorage?.setItem("theme", "light");
   }
 
-  // checking if sessions exists
-  //   if (session) {
-  //     console.log("🚀 ~ Home ~ session:123", session);
+  // useEffect(() => {
+  //   // if (typeof window !== "undefined" && localStorage?.theme) {
+  //   //   setTheme(localStorage?.theme);
+  //   // }
+  // }, []);
 
-  //     console.log(response, "createuser response");
-  //     // rendering components for logged in users
-  //     redirect("/chat");
-  //   }
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <h1 className="text-4xl font-semibold mb-6">Welcome Back!</h1>

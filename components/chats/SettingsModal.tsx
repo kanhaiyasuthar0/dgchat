@@ -11,12 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Location from "../profile/Location";
+import CountryState from "../profile/CountryState";
 interface CatSubcatResponse {
   [key: string]: string[];
 }
 interface YourComponentProps {
   isOpen?: boolean;
-  handleClose: () => void;
+  handleClose?: () => void;
   states?: any;
   categories?: { key: string[] };
   allCategories?: CatSubcatResponse;
@@ -52,14 +54,16 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
       // case "themeCustomization":
       //   return <ThemeCustomization handleClose={handleClose} />;
       case "countryCustomization":
-        return <CountryCustomization handleClose={handleClose} />;
+        return (
+          <CountryCustomization states={states} handleClose={handleClose} />
+        );
       default:
         return <AccountPreferences isOpen={isOpen} handleClose={handleClose} />;
     }
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-full">
+    <div className="flex flex-col md:flex-row bg-white dark:bg-gray-800 text-gray-900 dark:text-white h-full w-full">
       <div className="w-full md:w-1/3 lg:w-1/4 p-5 overflow-auto bg-gray-50 dark:bg-gray-800">
         {/* Sidebar with options... */}
         <ul className="space-y-4">
@@ -69,12 +73,12 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
           >
             Crop Preferences
           </li>
-          {/* <li
+          <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("countryCustomization")}
           >
             Country Preferences
-          </li> */}
+          </li>
           {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("cropPreferences")}
@@ -105,7 +109,7 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
 };
 
 interface YourComponentProps {
-  handleClose: () => void;
+  handleClose?: () => void;
 }
 
 interface TimezoneOption {
@@ -248,8 +252,6 @@ const CropSelection: React.FC<YourComponentProps> = () => {
 
 const NotificationSettings: React.FC<YourComponentProps> = ({
   handleClose,
-}: {
-  handleClose: () => void;
 }) => (
   <section className="space-y-4">
     <div className="flex items-center">
@@ -281,15 +283,13 @@ const NotificationSettings: React.FC<YourComponentProps> = ({
   </section>
 );
 
-const CountryCustomization: React.FC<YourComponentProps> = ({
-  handleClose,
-}: {
-  handleClose: () => void;
-}) => (
-  <section className="space-y-4">
+// for country customization
+const CountryCustomization: React.FC<YourComponentProps> = ({}) => (
+  <section className="space-y-4 h-full w-full">
     {/* <h2 className="text-lg font-semibold">Theme</h2> */}
     <Suspense>
-      <CountryStateSelector handleClose={handleClose} />
+      {/* <CountryStateSelector states={states} handleClose={handleClose} /> */}
+      <CountryState />
     </Suspense>
   </section>
 );

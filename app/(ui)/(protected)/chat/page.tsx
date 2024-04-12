@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
+import MainChat from "@/components/chats/MainChat";
 import MainChatPage from "@/components/chats/MainChatPage";
+import PrimarySidebar from "@/components/generic/sibebar/PrimarySidebar";
 import { Metadata, ResolvingMetadata } from "next";
 import { redirect, useSearchParams } from "next/navigation";
 
@@ -55,12 +57,26 @@ interface IChatExchange {
 const ChatPage = async ({
   searchParams,
 }: {
-  searchParams: { state?: string };
+  searchParams: { service?: string; id?: string };
 }) => {
-  console.log("🚀 ~ ChatPage ~ searchParams:", searchParams);
+  console.log("🚀 ~ searchParams:", searchParams);
+
+  const response = await fetch(
+    `${process.env.NEXT_DEPLOYED_URL}/api/chatsessions`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        name: searchParams.service,
+        someid: searchParams.id,
+      }),
+    }
+  );
+  const data = await response.json();
+  console.log("🚀 ~ data:123412", data);
+  // console.log("🚀 ~ ChatPage ~ searchParams:", searchParams);
   // console.log("🚀 ~ ChatPage ~ params:", params);
-  const data = await auth();
-  const selectedState = searchParams["state"] || null;
+  // const data = await auth();
+  // const selectedState = searchParams["state"] || null;
   // const searchParams = useSearchParams();
   // console.log("on server123", searchParams?.get("crop"));
   // const data = await auth();
@@ -70,123 +86,117 @@ const ChatPage = async ({
   // }
 
   // fetch all the states as per the country default is INDIA
-  async function fetchStates(): Promise<string[]> {
-    try {
-      const response = await fetch(
-        "https://sandbox.farmstack.digitalgreen.org/ai/chat/state/"
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const states: string[] = await response.json();
-      return states;
-    } catch (error) {
-      console.error("Error fetching states:", error);
-      return [];
-    }
-  }
-  async function fetchChatHistory(): Promise<string[]> {
-    console.log(data?.user);
-    try {
-      const response = await fetch(
-        "https://sandbox.farmstack.digitalgreen.org/ai/chat/chat_history/",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email_id: data?.user?.databaseId,
-          }),
-          headers: {
-            "Content-Type": "application/json", // This header tells the server to expect JSON
-          },
-        }
-      );
-      // console.log(response, "response123");
-      // if (!response.ok) {
-      //   throw new Error("Network response was not ok");
-      // }
-      const history: string[] = await response.json();
-      return history;
-    } catch (error) {
-      console.error("Error fetching states:", error);
-      return [];
-    }
-  }
+  // async function fetchStates(): Promise<string[]> {
+  //   try {
+  //     const response = await fetch(
+  //       "https://sandbox.farmstack.digitalgreen.org/ai/chat/state/"
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const states: string[] = await response.json();
+  //     return states;
+  //   } catch (error) {
+  //     console.error("Error fetching states:", error);
+  //     return [];
+  //   }
+  // }
+  // async function fetchChatHistory(): Promise<string[]> {
+  //   console.log(data?.user);
+  //   try {
+  //     const response = await fetch(
+  //       "https://sandbox.farmstack.digitalgreen.org/ai/chat/chat_history/",
+  //       {
+  //         method: "POST",
+  //         body: JSON.stringify({
+  //           email_id: data?.user?.databaseId,
+  //         }),
+  //         headers: {
+  //           "Content-Type": "application/json", // This header tells the server to expect JSON
+  //         },
+  //       }
+  //     );
+  //     // console.log(response, "response123");
+  //     // if (!response.ok) {
+  //     //   throw new Error("Network response was not ok");
+  //     // }
+  //     const history: string[] = await response.json();
+  //     return history;
+  //   } catch (error) {
+  //     console.error("Error fetching states:", error);
+  //     return [];
+  //   }
+  // }
 
-  interface CatSubcatResponse {
-    [key: string]: string[];
-  }
+  // interface CatSubcatResponse {
+  //   [key: string]: string[];
+  // }
 
-  async function fetchCatAndSubcat(
-    selectedState: string
-  ): Promise<CatSubcatResponse> {
-    try {
-      const response = await fetch(
-        `https://sandbox.farmstack.digitalgreen.org/ai/chat/cat_and_subcat/?state=${selectedState}`,
-        {
-          method: "GET", // Change to 'GET' if your API expects a GET request.
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // If it's actually a POST request and requires a body, uncomment the following line:
-          // body: JSON.stringify({ state: selectedState }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data: CatSubcatResponse = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching categories and subcategories:", error);
-      return {};
-    }
-  }
+  // async function fetchCatAndSubcat(
+  //   selectedState: string
+  // ): Promise<CatSubcatResponse> {
+  //   try {
+  //     const response = await fetch(
+  //       `https://sandbox.farmstack.digitalgreen.org/ai/chat/cat_and_subcat/?state=${selectedState}`,
+  //       {
+  //         method: "GET", // Change to 'GET' if your API expects a GET request.
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         // If it's actually a POST request and requires a body, uncomment the following line:
+  //         // body: JSON.stringify({ state: selectedState }),
+  //       }
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const data: CatSubcatResponse = await response.json();
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Error fetching categories and subcategories:", error);
+  //     return {};
+  //   }
+  // }
 
-  const allStates = await fetchStates();
-  let allCategories = {};
+  // const allStates = [];
+  // const allStates = await fetchStates();
+  // let allCategories = {};
 
   //get all list of crops
-  if (selectedState) {
-    const response = await fetchCatAndSubcat(selectedState);
-    // console.log("🚀 ~ ChatPage ~ response:", response);
-    allCategories = { ...response };
-  }
+  // if (selectedState) {
+  //   const response = await fetchCatAndSubcat(selectedState);
+  //   // console.log("🚀 ~ ChatPage ~ response:", response);
+  //   allCategories = { ...response };
+  // }
 
-  const allChatHistory: any = await fetchChatHistory();
+  // const allChatHistory: any = await fetchChatHistory();
 
-  function updateKeyInObjects(
-    array: Array<Record<string, any>>,
-    oldKey: string,
-    newKey: string
-  ) {
-    return array.map((obj) => {
-      if (obj.hasOwnProperty(oldKey)) {
-        // Create a new object with all properties of the original object
-        const newObj = { ...obj };
-        // Add the new key with the value of the old key
-        newObj[newKey] = newObj[oldKey];
-        // Delete the old key
-        delete newObj[oldKey];
-        return newObj;
-      }
-      return obj;
-    });
-  }
+  // function updateKeyInObjects(
+  //   array: Array<Record<string, any>>,
+  //   oldKey: string,
+  //   newKey: string
+  // ) {
+  //   return array.map((obj) => {
+  //     if (obj.hasOwnProperty(oldKey)) {
+  //       // Create a new object with all properties of the original object
+  //       const newObj = { ...obj };
+  //       // Add the new key with the value of the old key
+  //       newObj[newKey] = newObj[oldKey];
+  //       // Delete the old key
+  //       delete newObj[oldKey];
+  //       return newObj;
+  //     }
+  //     return obj;
+  //   });
+  // }
 
-  const updatedChatHistory = updateKeyInObjects(
-    allChatHistory,
-    "output",
-    "response"
-  );
+  // const updatedChatHistory = updateKeyInObjects(
+  //   allChatHistory,
+  //   "output",
+  //   "response"
+  // );
 
-  console.log(allCategories, "allCategories");
-  return (
-    <MainChatPage
-      states={allStates}
-      allCategories={allCategories}
-      history={updatedChatHistory}
-    />
-  );
+  return <PrimarySidebar />;
 };
 
 export default ChatPage;

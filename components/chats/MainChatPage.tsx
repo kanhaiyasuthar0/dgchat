@@ -15,6 +15,9 @@ import SidebarContent from "@/components/generic/SidebarContent";
 import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import ThemeCustomization from "../generic/ThemeChanger";
+import { ChatContextProvider } from "./ChatContext";
+import { CommandDialogDemo } from "../generic/ContextMenu";
+import { ListFilter } from "lucide-react";
 
 interface ResponseType {
   youtube_url: string;
@@ -43,16 +46,19 @@ const MainChatPage = ({
   history: any;
   allCategories: CatSubcatResponse;
 }) => {
-  const { data, status, update } = useSession();
-  // console.log("🚀 ~ ChatPage ~ data:", data, status, update);
+  const [showModal, setShowModal] = useState(false);
 
-  // if (!data) {
-  //   signOut({ callbackUrl: "/" });
-  //   // redirect("/");
+  // if (typeof window !== "undefined" && !localStorage?.getItem("theme")) {
+  //   document.documentElement.classList.add("light");
+  //   localStorage?.setItem("theme", "light");
   // }
-  if (typeof window !== "undefined" && !localStorage?.getItem("theme")) {
-    document.documentElement.classList.add("dark");
+
+  if (typeof window !== "undefined" && localStorage?.theme === "dark") {
+    document?.documentElement.classList.add("dark");
     localStorage?.setItem("theme", "dark");
+  } else {
+    // document?.documentElement.classList.remove("dark");
+    // localStorage?.setItem("theme", "light");
   }
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -70,12 +76,7 @@ const MainChatPage = ({
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
         />
-        {/* Sidebar content */}
-        {/* <div className="flex flex-col w-64 px-4 py-8 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-600 lg:static fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition duration-200 ease-in-out z-30"> */}
-        {/* Toggler for smaller screens */}
-        <div className="absolute top-4 right-0 m-4 lg:hidden block">
-          <ThemeCustomization />
-        </div>
+
         <SidebarContent />
 
         {/* </div> */}
@@ -83,17 +84,22 @@ const MainChatPage = ({
 
       {/* Main chat section */}
       <div className="flex-1 p-4 bg-gray-100 dark:bg-gray-900 overflow-auto">
-        <ContextMenu>
+        <Suspense fallback={<div>Loading...</div>}>
+          {/* <ChatContextProvider> */}
+          <MainChat
+            // activeBot={activeBot}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            isSidebarOpen={isSidebarOpen}
+            toggleSidebar={toggleSidebar}
+            states={states}
+            history={history}
+            allCategories={allCategories}
+          />
+          {/* </ChatContextProvider> */}
+        </Suspense>
+        {/* <ContextMenu>
           <ContextMenuTrigger>
-            <Suspense fallback={<div>Loading...</div>}>
-              <MainChat
-                isSidebarOpen={isSidebarOpen}
-                toggleSidebar={toggleSidebar}
-                states={states}
-                history={history}
-                allCategories={allCategories}
-              />
-            </Suspense>
           </ContextMenuTrigger>
           <ContextMenuContent>
             <ContextMenuItem>Zone</ContextMenuItem>
@@ -102,7 +108,8 @@ const MainChatPage = ({
             <ContextMenuItem>Profile</ContextMenuItem>
             <ContextMenuItem>Logout</ContextMenuItem>
           </ContextMenuContent>
-        </ContextMenu>
+        </ContextMenu> */}
+        {/* <CommandDialogDemo /> */}
       </div>
     </div>
   );
