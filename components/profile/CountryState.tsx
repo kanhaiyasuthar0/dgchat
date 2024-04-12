@@ -67,11 +67,7 @@ const CountryState = () => {
       ],
     })
   );
-  console.log(
-    typeof window !== undefined && localStorage?.country
-      ? localStorage?.country
-      : ""
-  );
+
   const [selectedState, setSelectedState] = useState(
     typeof window !== undefined && localStorage?.state
       ? localStorage?.state
@@ -82,7 +78,9 @@ const CountryState = () => {
     typeof window !== undefined && localStorage?.city ? localStorage?.city : ""
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [villageName, setVillageName] = useState(localStorage?.village || "");
+  const [villageName, setVillageName] = useState(
+    (typeof window !== undefined && localStorage?.village) || ""
+  );
   useEffect(() => {
     setIsLoading(true);
     setCountries(Country.getAllCountries());
