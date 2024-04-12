@@ -61,20 +61,20 @@ const ChatPage = async ({
 }) => {
   console.log("🚀 ~ searchParams:", searchParams);
 
-  const response = await fetch(
-    `https://farmerchat.vercel.app/api/chatsessions`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        name: searchParams.service,
-        someid: searchParams.id,
-      }),
-      headers: {
-        "Content-Type": "application/json", // Ensure to set the Content-Type header
-      },
-    }
-  );
-  console.log("🚀 ~ response:912", response);
+  // const response = await fetch(
+  //   `https://farmerchat.vercel.app/api/chatsessions`,
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       name: searchParams.service,
+  //       someid: searchParams.id,
+  //     }),
+  //     headers: {
+  //       "Content-Type": "application/json", // Ensure to set the Content-Type header
+  //     },
+  //   }
+  // );
+  // console.log("🚀 ~ response:912", response);
 
   const data = [
     {

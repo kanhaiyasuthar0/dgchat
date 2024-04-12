@@ -330,12 +330,45 @@ const Services = async ({
   };
   const isSidebarOpen = false;
 
-  const response = await fetch(`https://farmerchat.vercel.app/api/services`, {
-    cache: "no-store",
-  });
-  // console.log("🚀 ~ allServices:", response);
-  const allServices = await response.json();
+  // const response = await fetch(`https://farmerchat.vercel.app/api/services`, {
+  //   cache: "no-store",
+  // });
+  // // console.log("🚀 ~ allServices:", response);
+  // const allServices = await response.json();
   // console.log("🚀 ~ allServices:", allServices);
+
+  const allServices = {
+    services: {
+      Government: [
+        "Agriculture Department",
+        "Horticulture Mission",
+        "Livestock and Animal Husbandry",
+        "Forestry Department",
+        "Fisheries Department",
+        "Soil Conservation Department",
+        "Water Resources Department",
+        "University ",
+        "Extension Department",
+      ],
+      Private: [
+        "Seed Companies",
+        "Machinery and Equipment",
+        "Solar",
+        "Poly Houses",
+        "Fertilizer Manufacturers",
+        "Natural Farming",
+        "Agro-technology Companies",
+        "Agri-Input Suppliers",
+        "Agro-Processing Units",
+        "Agri-Tourism Centers",
+        "Farm Management Services",
+        "Agricultural Finance",
+      ],
+      NGO: ["National", "International"],
+      Mentors: ["Lead Farmers and Influencers", "Sustainable Farming Mentors"],
+      "FPOs and Coops": ["FPO"],
+    },
+  };
 
   return (
     <div className="flex relative h-screen bg-white dark:bg-gray-900 text-black dark:text-white overflow-hidden">
