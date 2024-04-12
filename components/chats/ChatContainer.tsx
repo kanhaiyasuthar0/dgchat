@@ -70,6 +70,8 @@ const ChatContainer = ({ history }: { history: any }) => {
         "filters",
         JSON.stringify({ sub_category: decodeURIComponent(crop) })
       );
+    } else {
+      formData.append("filters", JSON.stringify({}));
     }
     if (state) {
       formData.append("state", state?.name);

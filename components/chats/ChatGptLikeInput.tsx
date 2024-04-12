@@ -14,7 +14,7 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
   getResponse: (str: any, str2?: Blob) => void;
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<Blob | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +26,11 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
     if (!inputValue.trim()) return;
     setInputValue(""); // Clear input field
     setFile(null);
-    getResponse(inputValue, file ?? new Blob());
+    if (file) {
+      getResponse(inputValue, file ?? "");
+    } else {
+      getResponse(inputValue);
+    }
   };
 
   useEffect(() => {
@@ -60,7 +64,9 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
                 className="w-16 h-16 object-cover rounded"
               />
               <div className="flex flex-col">
-                <span className="font-medium text-white">{file.name}</span>
+                <span className="font-medium text-white">
+                  {file instanceof File ? file?.name : ""}
+                </span>
                 <span className="text-xs text-white">
                   {file.type.split("/")[1]}
                 </span>
@@ -74,8 +80,12 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
             </>
           ) : (
             <div className="flex flex-col">
-              <span className="font-medium text-gray-700">{file.name}</span>
-              <span className="text-xs text-gray-500">{file.type}</span>
+              <span className="font-medium text-gray-700">
+                {file instanceof File ? file.name : ""}
+              </span>
+              <span className="text-xs text-gray-500">
+                {file instanceof File ? file.type : ""}
+              </span>
             </div>
           )}
         </div>
