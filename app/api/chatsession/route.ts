@@ -33,15 +33,15 @@ export async function GET(req: NextRequest) {
 export async function POST(req: Request) {
   // console.log("🚀 ~ GET ~ req:", req);
 
-  const body = await req.json();
-  // console.log("🚀 ~ POST ~ body:", body);
-  const payload = {
-    name: body?.name || "New",
-    someid: body?.someid,
-    creationDate: new Date().toISOString(),
-  };
+  // const body = await req.json();
+  // // console.log("🚀 ~ POST ~ body:", body);
+  // const payload = {
+  //   name: body?.name || "New",
+  //   someid: body?.someid,
+  //   creationDate: new Date().toISOString(),
+  // };
 
-  chatSessions.unshift(payload);
+  // chatSessions.unshift(payload);
   revalidatePath("/chat");
   revalidatePath("/services");
   try {

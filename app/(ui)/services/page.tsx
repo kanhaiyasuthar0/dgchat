@@ -330,12 +330,9 @@ const Services = async ({
   };
   const isSidebarOpen = false;
 
-  const response = await fetch(
-    `${process.env.NEXT_DEPLOYED_URL}/api/services`,
-    {
-      cache: "no-store",
-    }
-  );
+  const response = await fetch(`https://farmerchat.vercel.app/api/services`, {
+    cache: "no-store",
+  });
   // console.log("🚀 ~ allServices:", response);
   const allServices = await response.json();
   // console.log("🚀 ~ allServices:", allServices);

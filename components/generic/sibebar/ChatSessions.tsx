@@ -2,12 +2,10 @@ import { MessageSquareShare } from "lucide-react";
 import React from "react";
 
 const ChatSessions = async () => {
-  const response = await fetch(
-    `${process.env.NEXT_DEPLOYED_URL}/api/chatsession/`,
-    {
-      method: "GET",
-    }
-  );
+  console.log(process.env.DEPLOYED_URL, "process.env.DEPLOYED_URL");
+  const response = await fetch(`http://localhost:3000/api/chatsession/`, {
+    method: "GET",
+  });
   const { chatSessions } = await response.json();
   //   console.log("🚀 ~ SidebarContent ~ data:", chatSessions);
   return (
