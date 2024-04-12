@@ -83,12 +83,16 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     searchParams && searchParams.get("category")
       ? decodeURIComponent(searchParams?.get("category")!)
-      : localStorage?.getItem("category") ?? ""
+      : typeof window !== undefined
+      ? localStorage?.getItem("category")
+      : ""
   );
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(
     searchParams && searchParams.get("crop")
       ? decodeURIComponent(searchParams?.get("crop")!)
-      : localStorage?.getItem("subcat") ?? ""
+      : typeof window !== undefined
+      ? localStorage?.getItem("subcat")
+      : ""
   );
 
   const [mainCategories, setMainCategories] = useState<any>([]);
