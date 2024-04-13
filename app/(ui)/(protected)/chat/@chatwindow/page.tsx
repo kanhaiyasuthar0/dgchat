@@ -4,7 +4,8 @@ import React from "react";
 
 const ChatWindow = async ({ searchParams }: any) => {
   //   console.log("🚀 ~ ChatWindow ~ params:", params);
-  return <MainChat activeBot={searchParams?.service} />;
+
+  return <MainChat activeBot={searchParams?.service} id={searchParams?.id} />;
 };
 
 export default ChatWindow;

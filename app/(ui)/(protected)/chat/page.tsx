@@ -6,7 +6,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import { redirect, useSearchParams } from "next/navigation";
 
 import React from "react";
-
+export const dynamic = "force-dynamic";
 export async function generateMetadata(
   { params }: any,
   parent: ResolvingMetadata
@@ -99,7 +99,7 @@ const ChatPage = async ({
     },
   ];
 
-  console.log("🚀 ~ data:123412", data);
+  // console.log("🚀 ~ data:123412", data);
   // console.log("🚀 ~ ChatPage ~ searchParams:", searchParams);
   // console.log("🚀 ~ ChatPage ~ params:", params);
   // const data = await auth();
@@ -223,7 +223,7 @@ const ChatPage = async ({
   //   "response"
   // );
 
-  return <PrimarySidebar />;
+  return <></>;
 };
 
 export default ChatPage;

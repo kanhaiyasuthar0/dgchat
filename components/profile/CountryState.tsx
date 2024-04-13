@@ -15,6 +15,7 @@ import {
 import { PuffLoader } from "react-spinners";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { toast } from "sonner";
 interface ICountry {
   name: string;
   isoCode: string;
@@ -42,7 +43,11 @@ interface ICity extends LibraryCity {
   isoCode?: string; // Make isoCode optional if it's not guaranteed to be provided by the library
 }
 
-const CountryState = () => {
+const CountryState = ({
+  loginStepSubmitter,
+}: {
+  loginStepSubmitter?: (loginStepSubmitter: any) => void;
+}) => {
   const [countries, setCountries] = useState<ICountry[] | string[]>([]);
   console.log("🚀 ~ CountryState ~ countries:", countries);
   const [states, setStates] = useState<IState[]>([]);
@@ -113,10 +118,21 @@ const CountryState = () => {
   }, [selectedState]);
 
   const handleSaveConfig = () => {
-    localStorage.setItem("country", selectedCountry);
-    localStorage.setItem("state", selectedState);
-    localStorage.setItem("city", selectedCity);
-    localStorage.setItem("village", villageName);
+    typeof window !== undefined &&
+      localStorage.setItem("country", selectedCountry);
+    typeof window !== undefined && localStorage.setItem("state", selectedState);
+    typeof window !== undefined && localStorage.setItem("city", selectedCity);
+    typeof window !== undefined && localStorage.setItem("village", villageName);
+
+    toast(`Country preference saved successfully!`);
+    if (loginStepSubmitter) {
+      loginStepSubmitter({
+        selectedCountry,
+        selectedState,
+        selectedCity,
+        villageName,
+      });
+    }
   };
   //   console.log("🚀 ~ handleSaveConfig ~ selectedCountry:", selectedCountry);
 
@@ -220,7 +236,11 @@ const CountryState = () => {
             placeholder="Enter village name"
             disabled={!selectedCity}
             onChange={handleVillageChange}
-            defaultValue={localStorage?.getItem("village") || ""}
+            defaultValue={
+              typeof window !== undefined
+                ? localStorage?.getItem("village")!
+                : ""
+            }
           />
           {/* </LabelInputContainer> */}
           {/* <LabelInputContainer> */}

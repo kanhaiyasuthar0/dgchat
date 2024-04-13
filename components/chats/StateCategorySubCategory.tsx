@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner";
 import { ChatContext } from "./ChatContext";
 import { PuffLoader } from "react-spinners";
+import { Label } from "../ui/label";
 // interface StateOption {
 
 // }
@@ -28,8 +29,9 @@ interface CatSubcatResponse {
   [key: string]: string[];
 }
 interface MyComponentProps {
-  states: any; // Preferably use a more specific type instead of 'any'
+  states?: any; // Preferably use a more specific type instead of 'any'
   allCategories?: CatSubcatResponse;
+  loginStepSubmitter?: (data: any) => void;
 }
 
 interface Categories {
@@ -67,6 +69,7 @@ const customStyles = {
 const StateCategorySubCategory: React.FC<MyComponentProps> = ({
   states,
   allCategories,
+  loginStepSubmitter,
 }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -131,30 +134,34 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
   console.log(states, "states in client");
 
   const handleSave = async () => {
-    setIsLoading(true);
-    const params = new URLSearchParams(window.location.search);
-    console.log("🚀 ~ handleSave ~ params:", params);
+    // setIsLoading(true);
+    // const params = new URLSearchParams(window.location.search);
+    // console.log("🚀 ~ handleSave ~ params:", params);
 
-    if (selectedCategory) {
-      params.set("category", encodeURIComponent(selectedCategory));
-    } else {
-      params.delete("category");
-      return;
-    }
+    // if (selectedCategory) {
+    //   params.set("category", encodeURIComponent(selectedCategory));
+    // } else {
+    //   params.delete("category");
+    //   return;
+    // }
 
-    if (selectedSubCategory) {
-      params.set("crop", encodeURIComponent(selectedSubCategory));
-    } else {
-      params.delete("crop");
-      return;
-    }
+    // if (selectedSubCategory) {
+    //   params.set("crop", encodeURIComponent(selectedSubCategory));
+    // } else {
+    //   params.delete("crop");
+    //   return;
+    // }
 
-    setIsLoading(false);
+    // setIsLoading(false);
 
-    replace(`${pathname}?${params.toString()}`);
+    // replace(`${pathname}?${params.toString()}`);
+
     toast(`Selection done`, {
       description: `Category : ${selectedCategory}, SubCategory : ${selectedSubCategory}`,
     });
+    if (loginStepSubmitter) {
+      loginStepSubmitter(localStorage?.subcat);
+    }
   };
 
   async function fetchCatAndSubcat(selectedState: string) {
@@ -215,14 +222,19 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
   }, []);
 
   return (
-    <div className="space-y-4 flex flex-col p-4 shadow-lg h-full">
+    <div
+      className="space-y-4 mt-4 dark:bg-gray-900 border w-full bg-gray-100 flex flex-col p-8 shadow-lg h-full rounded-lg transition-colors duration-300"
+
+      // className={``}
+    >
       {isLoading ? (
         <div className="h-full w-full flex items-center justify-center">
           <PuffLoader loading color="black" />
         </div>
       ) : (
         <>
-          <div>
+          <div className="flex gap-4 flex-col">
+            <Label>Crop selection (Category / Subcategory)</Label>
             <Select
               value={selectedCategory!}
               onValueChange={handleCategoryChange}
@@ -233,7 +245,11 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
               <SelectContent>
                 <SelectGroup>
                   {Object.keys(mainCategories)?.map((category, index) => (
-                    <SelectItem key={category} value={category}>
+                    <SelectItem
+                      className="capitalize"
+                      key={category}
+                      value={category}
+                    >
                       {category}
                     </SelectItem>
                   ))}
@@ -256,7 +272,11 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
                   {subcategories?.map(
                     (subcategory: string, subIndex: string) => {
                       return (
-                        <SelectItem key={subIndex} value={subcategory}>
+                        <SelectItem
+                          className="capitalize"
+                          key={subIndex}
+                          value={subcategory}
+                        >
                           {subcategory}
                         </SelectItem>
                       );
@@ -274,6 +294,15 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
           >
             {isLoading ? "Loading..." : "Save"}
           </button>
+          {loginStepSubmitter && (
+            <button
+              // disabled={!selectedCategory && !selectedSubCategory}
+              onClick={() => loginStepSubmitter("previous")}
+              className="mt-4 w-full dark:text-white text-white bg-gray-600 hover:bg-black-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-black-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+            >
+              Back
+            </button>
+          )}
         </>
       )}
     </div>
