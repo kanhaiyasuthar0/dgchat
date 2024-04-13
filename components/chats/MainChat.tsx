@@ -18,6 +18,7 @@ interface CatSubcatResponse {
 }
 const MainChat = ({
   activeBot,
+  id,
 }: {
   // allCategories: CatSubcatResponse;
   activeBot?: string;
@@ -28,21 +29,8 @@ const MainChat = ({
   states?: any;
   history?: any;
   allCategories?: any;
+  id?: string;
 }) => {
-  // console.log("🚀 ~ params:", params);
-  // Placeholder for handling option selection from the modal
-  const handleOptionSelect = (option: any) => {
-    console.log(option);
-    // setShowModal(false);
-  };
-
-  // const states = ["State 1", "State 2", "State 3"]; // Example states
-  const categories = {
-    "Category 1": ["Subcategory 1", "Subcategory 2"],
-    "Category 2": ["Subcategory 3", "Subcategory 4"],
-    // Populate dynamically based on selected state
-  };
-
   return (
     <div className="relative flex h-full bg-white dark:bg-gray-900 text-black dark:text-white">
       {/* Options button and modal trigger, positioned absolutely */}
@@ -89,11 +77,11 @@ const MainChat = ({
             <Suspense
               fallback={
                 <div className="flex justify-center items-center min-h-screen">
-                  <PuffLoader loading color="black" />
+                  <PuffLoader loading color={"gray"} />
                 </div>
               }
             >
-              <ChatContainerWrapper />
+              <ChatContainerWrapper id={id} />
             </Suspense>
           </div>
         </div>

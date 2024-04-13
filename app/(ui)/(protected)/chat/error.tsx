@@ -18,7 +18,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="flex w-full h-50 flex-col items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="mb-8">
         {/* Update the src path to your error-specific graphic */}
         <Image
@@ -26,7 +26,7 @@ export default function Error({
           alt="Error"
           width={400}
           height={300}
-          className="dark:filter dark:invert"
+          className="dark:filter h-20 w-20 dark:invert"
         />
       </div>
       <h1 className="text-5xl font-bold text-gray-800 dark:text-white mb-4">

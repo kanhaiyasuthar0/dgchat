@@ -34,7 +34,13 @@ interface IChatExchange {
   loading?: boolean;
   image?: string;
 }
-const ChatContainer = ({ history }: { history: any }) => {
+const ChatContainer = ({
+  history,
+  activeBotData,
+}: {
+  history: any;
+  activeBotData: any;
+}) => {
   console.log("🚀 ~ ChatContainer ~ history:", history);
   const { data: session } = useSession();
   const user = session?.user as User | undefined;
@@ -258,7 +264,7 @@ const ChatContainer = ({ history }: { history: any }) => {
   };
 
   return (
-    <div className="flex shadow border rounded-lg flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-4">
+    <div className="flex shadow border rounded-lg flex-col h-full dark:bg-gray-900 bg-gray-100 p-1 lg:p-2">
       <div
         className="flex-1 overflow-auto rounded-lg hide-scrollbar relative stick-container"
         onScroll={checkScrollPosition}
@@ -278,7 +284,7 @@ const ChatContainer = ({ history }: { history: any }) => {
           chatExchanges.map((exchange) => (
             <div
               key={exchange.id}
-              className="w-full py-2 my-2 dark:text-white text-gray-800"
+              className="w-full py-1 my-0 dark:text-white text-gray-800"
             >
               {/* User query */}
               <div className="text-left mysticky">
@@ -332,7 +338,11 @@ const ChatContainer = ({ history }: { history: any }) => {
             </div>
           ))
         ) : (
-          <AssistComponent />
+          <AssistComponent
+            activeBotData={
+              activeBotData ? activeBotData?.chatSessions?.allData : null
+            }
+          />
         )}
         <div ref={bottomRef}></div>
       </div>

@@ -370,8 +370,8 @@ const Services = ({
             </div>
           </div>
 
-          <div className="rounder-lg">
-            <Search placeholder="Search tools..." />
+          <div className="rounder-lg border">
+            <Search query="" placeholder="Search tools..." />
           </div>
         </div>
         <Suspense fallback={"Loading..."}>
@@ -384,7 +384,7 @@ const Services = ({
                 Object.keys(agricultureServices)?.map((category) => (
                   <Link key={category} href={`/services/?type=${category}`}>
                     <div className="bg-white hover:bg-gray-200 dark:hover:bg-gray-500 dark:hover:text-white dark:bg-gray-800 shadow-md rounded-lg p-4 text-center">
-                      <div className="font-bold dark:text-white text-gray-900">
+                      <div className="font-bold dark:text-white text-gray-900 ">
                         {category
                           .replaceAll("Management", "")
                           .replaceAll("Innovation", "")

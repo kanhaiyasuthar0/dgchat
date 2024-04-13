@@ -16,21 +16,24 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [file, setFile] = useState<Blob | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
-
+  const [waitingForReply, setwaitingForReply] = useState(false);
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setFile(file);
+    e.target.value = ""; // Reset the input after setting the file
   };
   const handleSendMessage = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
     setInputValue(""); // Clear input field
     setFile(null);
+    setwaitingForReply(true);
     if (file) {
       getResponse(inputValue, file ?? "");
     } else {
       getResponse(inputValue);
     }
+    setwaitingForReply(false);
   };
 
   useEffect(() => {
@@ -120,8 +123,9 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
         />
 
         <button
+          disabled={waitingForReply || !inputValue}
           onClick={handleSendMessage} // Replace with your actual send message function
-          className="ml-2 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 transition ease-in-out focus:outline-none"
+          className="ml-2 disabled:bg-gray-200 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 transition ease-in-out focus:outline-none"
         >
           <Send size={"15"} />
         </button>

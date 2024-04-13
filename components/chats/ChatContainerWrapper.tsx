@@ -1,8 +1,9 @@
 import { auth } from "@/auth";
 import ChatContainer from "./ChatContainer";
 
-const ChatContainerWrapper = async () => {
+const ChatContainerWrapper = async ({ id }: { id?: string }) => {
   const data = await auth();
+  console.log("🚀 ~ ChatContainerWrapper41 ~ serchParams:", id);
 
   async function fetchChatHistory(): Promise<string[]> {
     console.log(data?.user);
@@ -17,6 +18,7 @@ const ChatContainerWrapper = async () => {
           headers: {
             "Content-Type": "application/json", // This header tells the server to expect JSON
           },
+          cache: "no-store",
         }
       );
       // console.log(response, "response123");
@@ -31,7 +33,35 @@ const ChatContainerWrapper = async () => {
     }
   }
 
-  const allChatHistory: any = await fetchChatHistory();
+  const fetchBotData = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_DEPLOYED_URL}/api/chatsession?id=${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json", // This header tells the server to expect JSON
+          },
+          cache: "no-store",
+          next: {
+            tags: ["allbots"],
+          },
+        }
+      );
+      // console.log(response, "response123");
+      // if (!response.ok) {
+      //   throw new Error("Network response was not ok");
+      // }
+      const data: string[] = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching states:", error);
+      return [];
+    }
+  };
+
+  const allChatHistory: any = !id ? await fetchChatHistory() : [];
+  const activeBotData: any = id ? await fetchBotData() : null;
 
   function updateKeyInObjects(
     array: Array<Record<string, any>>,
@@ -57,7 +87,9 @@ const ChatContainerWrapper = async () => {
     "output",
     "response"
   );
-  return <ChatContainer history={updatedChatHistory} />;
+  return (
+    <ChatContainer history={updatedChatHistory} activeBotData={activeBotData} />
+  );
 };
 
 export default ChatContainerWrapper;

@@ -19,6 +19,8 @@ import { auth } from "@/auth";
 import ChatSessions from "./sibebar/ChatSessions";
 import AllAvailable from "./sibebar/AllAvailable";
 import { PuffLoader } from "react-spinners";
+import Image from "next/image";
+import { Skeleton } from "../ui/skeleton";
 
 const SidebarContent = async () => {
   const user = await auth();
@@ -28,8 +30,14 @@ const SidebarContent = async () => {
       {/* Bot selection section */}
       <div className="flex flex-col flex-1">
         <Link href={"/chat"}>
-          <h2 className="text-lg font-semibold text-black dark:text-white">
-            Farmer Chat
+          <h2 className="text-lg font-semibold justify-start text-black flex gap-2 dark:text-white">
+            <Image
+              src={"/primary-logo.svg"}
+              height={300}
+              width={300}
+              alt="FC"
+              className="h-10 w-full"
+            />
           </h2>
         </Link>
         <div className="absolute top-4 right-0 m-4 lg:hidden block">
@@ -45,16 +53,25 @@ const SidebarContent = async () => {
 
         {/* </Link> */}
         <div className="mt-5">
-          <AllAvailable />
+          {/* <AllAvailable /> */}
           <Link
             href={"/services"}
             className="flex gap-5 p-2 hover:bg-gray-100 rounded-sm dark:hover:bg-gray-700"
           >
-            <Blocks /> <span>Explore all services</span>
+            <Blocks /> <span>Explore Services</span>
           </Link>
         </div>
         <div className="bg-white mt-5 dark:bg-gray-800 max-h-96 overflow-auto hide-scrollbar">
-          <Suspense fallback={<PuffLoader loading color="black" />}>
+          <Suspense
+            fallback={
+              <div className="flex w-full justify-center items-center flex-col gap-3">
+                <Skeleton className="h-4 w-[250px] bg-gray-200 rounded-lg" />
+                <Skeleton className="h-4 w-[250px] bg-gray-200 rounded-lg" />
+                <Skeleton className="h-4 w-[250px] bg-gray-200 rounded-lg" />
+                <Skeleton className="h-4 w-[250px] bg-gray-200 rounded-lg" />
+              </div>
+            }
+          >
             <ChatSessions />
           </Suspense>
         </div>
@@ -62,7 +79,17 @@ const SidebarContent = async () => {
 
       {/* User profile section */}
       <div className="mt-auto">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <div className="flex items-center space-x-4">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                {/* <Skeleton className="h-4 w-[200px]" /> */}
+              </div>
+            </div>
+          }
+        >
           <UserProfile />
         </Suspense>
       </div>

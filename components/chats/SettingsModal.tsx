@@ -35,8 +35,9 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
   states,
   allCategories,
 }) => {
-  const [activeSection, setActiveSection] =
-    useState<string>("stateCropSelection");
+  const [activeSection, setActiveSection] = useState<string>(
+    "countryCustomization"
+  );
 
   const renderSection = () => {
     switch (activeSection) {
@@ -69,15 +70,15 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
         <ul className="space-y-4">
           <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
-            onClick={() => setActiveSection("stateCropSelection")}
-          >
-            Crop Preferences
-          </li>
-          <li
-            className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("countryCustomization")}
           >
             Country Preferences
+          </li>
+          <li
+            className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
+            onClick={() => setActiveSection("stateCropSelection")}
+          >
+            Crop Preferences
           </li>
           {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"

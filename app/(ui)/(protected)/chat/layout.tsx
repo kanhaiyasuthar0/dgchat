@@ -22,20 +22,25 @@ export default function ChatLayout({
   children,
   services,
   chatwindow,
+  sidebar,
 }: // modal,
 Readonly<{
   children: React.ReactNode;
   // modal: React.ReactNode;
   services: React.ReactNode;
   chatwindow: React.ReactNode;
+  sidebar: React.ReactNode;
 }>) {
   return (
     <div className="flex h-screen bg-white dark:bg-gray-900 text-black dark:text-white overflow-hidden">
       {children}
+      {sidebar}
       {/* {services} */}
 
       <div className="flex-1 p-4 bg-gray-100 dark:bg-gray-900 overflow-auto">
-        {chatwindow}
+        {/* <Suspense> */}
+        <Suspense fallback={"Loading..."}>{chatwindow}</Suspense>
+        {/* </Suspense> */}
       </div>
       <Toaster />
       {/* {modal} */}
