@@ -4,6 +4,8 @@ import React, { useState, ChangeEvent, useRef, useEffect } from "react";
 import { CrossIcon, PaperclipIcon, Send, X } from "lucide-react";
 import { Input } from "../ui/input";
 import Image from "next/image";
+import { MoonLoader, PuffLoader, PulseLoader } from "react-spinners";
+
 interface MyComponentProps {
   getResponse: (str1: string, str2?: Blob) => void;
   // include other props as needed
@@ -29,9 +31,9 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
     setFile(null);
     setwaitingForReply(true);
     if (file) {
-      getResponse(inputValue, file ?? "");
+      await getResponse(inputValue, file ?? "");
     } else {
-      getResponse(inputValue);
+      await getResponse(inputValue);
     }
     setwaitingForReply(false);
   };
@@ -127,7 +129,16 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
           onClick={handleSendMessage} // Replace with your actual send message function
           className="ml-2 disabled:bg-gray-200 px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 transition ease-in-out focus:outline-none"
         >
-          <Send size={"15"} />
+          {waitingForReply ? (
+            <PulseLoader
+              className="text-sm dark:text-white text-black"
+              loading
+              // color={"white"}
+              size={"2"}
+            />
+          ) : (
+            <Send size={"15"} />
+          )}
         </button>
       </div>
     </div>

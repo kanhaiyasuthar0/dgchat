@@ -43,7 +43,9 @@ const ChatContainer = ({
 }) => {
   console.log("🚀 ~ ChatContainer ~ history:", history);
   const { data: session } = useSession();
+  console.log("🚀 ~ session:", session);
   const user = session?.user as User | undefined;
+  console.log("🚀 ~ user:in123", user);
   const searchParams = useSearchParams();
   const [chatExchanges, setChatExchanges] = useState<IChatExchange[]>(
     history ?? []
@@ -74,13 +76,16 @@ const ChatContainer = ({
     if (crop) {
       formData.append(
         "filters",
-        JSON.stringify({ sub_category: decodeURIComponent(crop) })
+        JSON.stringify({
+          sub_category: decodeURIComponent(crop),
+          state: state?.name?.toLowerCase(),
+        })
       );
     } else {
       formData.append("filters", JSON.stringify({}));
     }
     if (state) {
-      formData.append("state", state?.name);
+      formData.append("state", state?.name?.toLowerCase());
     }
     if (city) {
       formData.append("district", city?.name);
@@ -227,6 +232,7 @@ const ChatContainer = ({
   }, [chatExchanges]);
   useEffect(() => {
     // fetchAllChatMessages();
+    console.log(user, "here123");
   }, [user]);
 
   const [lastSeenPrompt, setLastSeenPrompt] = useState("");
@@ -319,12 +325,12 @@ const ChatContainer = ({
                   <div className="flex gap-5 items-center bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-lg px-4 py-2 shadow animate-pulse">
                     <Avatar className="h-7 w-7">
                       <AvatarImage
-                        src="https://github.com/shadcn.png"
+                        src={"./secondary-logo.svg"}
                         alt="Bot Avatar"
                       />
                       <AvatarFallback>FC</AvatarFallback>
                     </Avatar>
-                    Replying...
+                    ✨ Thinking...
                   </div>
                 </div>
               ) : (
