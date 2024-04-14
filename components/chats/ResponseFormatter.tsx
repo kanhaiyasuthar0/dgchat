@@ -2,10 +2,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { Button } from "../ui/button";
 import Prepopulate from "./Prepulate";
 import Markdown from "react-markdown";
+// import Markdown from "react-native-simple-markdown";
 import ReadAloudButton from "../generic/ReadAloudButton";
 import { ClipboardCopy, ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
 import { toast } from "sonner";
+import rehypeSanitize from "rehype-sanitize";
 // import { RxClipboardCopy } from "react-icons/rx";
+import marked from "marked";
+import ProcessedResponse from "./ProcessedResponse";
+import local from "./process-response.module.css";
 const ResponseFormatter = ({
   exchange,
   getResponse,
@@ -59,40 +64,30 @@ const ResponseFormatter = ({
     }
   }
 
-  function preprocessText(text: string | undefined) {
+  function preprocessText(text: string | undefined): any {
     if (!text) return "";
 
-    // Replace single newlines with double newlines to ensure Markdown recognizes paragraph breaks.
-    text = text.replace(/\n/g, "\n\n");
+    // Ensure correct newline handling for lists by only adding double newlines where appropriate
+    // Avoid changing single newlines that follow list item markers
+    // text = text.replace(/\n(?![\n-])/g, "\n\n");
 
-    // Escape special Markdown characters that should be displayed as literals
-    // You might want to refine this list based on your specific needs
-    const specialCharacters = [
-      "\\",
-      "`",
-      "*",
-      "_",
-      "{",
-      "}",
-      "[",
-      "]",
-      "(",
-      ")",
-      "#",
-      "+",
-      "-",
-      ".",
-      "!",
-    ];
-    specialCharacters.forEach((char) => {
-      const escapedChar = `\\${char}`;
-      text = text?.split(char).join(escapedChar);
-    });
+    // // Escape Markdown special characters that aren't part of list formatting or other intentional Markdown usage
+    // // Adjusted to avoid escaping dashes used in lists
+    // const specialCharactersPattern = /([\\`*_{}[\]()#+!.])/g; // Excluding "-" which is used in lists
+    // text = text.replace(specialCharactersPattern, "\\$&");
 
-    // Convert URLs to Markdown links (if not already formatted as Markdown)
-    // This is a simplistic approach; consider using a library for more robust URL detection
-    text = text.replace(/https?:\/\/[^\s]+/g, (url) => `[${url}](${url})`);
+    // // Convert URLs to Markdown links only if not already formatted as Markdown
+    // text = text.replace(
+    //   /(?<!\]\()(https?:\/\/[^\s\)]+)(?!\))/g,
+    //   (url) => `[${url}](${url})`
+    // );
 
+    // return text.split("\n").map((line, index) => {
+    //   if (line.trim().startsWith("-")) {
+    //     return <li key={index}>{line.trim().substring(1).trim()}</li>;
+    //   }
+    //   return <p key={index}>{line}</p>;
+    // });
     return text;
   }
 
@@ -100,22 +95,29 @@ const ResponseFormatter = ({
 
   return (
     <div className="text-pretty mt-2">
-      <div className="w-full flex flex-col gap-2 align-middle dark:bg-gray-700 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
+      <div className="w-full flex flex-col gap-2 align-middle dark:bg-gray-600 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
         <div className="flex gap-5">
           <span className=" mr-1">
-            <Avatar className="h-7 w-7">
-              <AvatarImage
-                height={"8"}
-                width={8}
-                src="https://github.com/shadcn.png"
-              />
+            <Avatar className="h-7 w-7 p-1 bg-gray-200 dark:bg-gray-300">
+              <AvatarImage height={8} width={8} src="./secondary-logo.svg" />
               <AvatarFallback>FC</AvatarFallback>
             </Avatar>{" "}
           </span>
           <span>
-            <Markdown className="markdown-response leading-loose">
+            {/* <Markdown
+              // styles={markdownStyles}
+              className="markdown-response leading-loose"
+            >
+            </Markdown> */}
+            {/* {processResponse} */}
+
+            <Markdown className={"prose dark:text-gray-300 dark:prose-dark"}>
               {processResponse}
             </Markdown>
+            {/* <Markdown
+              children={processResponse}
+              rehypePlugins={rehypeSanitize}
+            /> */}
           </span>
         </div>
         {/* <ReadAloudButton text={processResponse} /> */}
@@ -170,6 +172,8 @@ const ResponseFormatter = ({
                 />
               </div>
             )}
+
+          {/* <ProcessedResponse /> */}
         </div>
       </div>
     </div>

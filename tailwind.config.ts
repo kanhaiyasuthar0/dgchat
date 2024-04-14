@@ -79,9 +79,40 @@ const config = {
       boxShadow: {
         input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
       },
+
+      typography: (theme: any) => ({
+        DEFAULT: {
+          css: {
+            // Default styles here
+          },
+        },
+        dark: {
+          css: {
+            color: theme("colors.gray.300"), // Sets the base color for dark mode text
+            strong: {
+              color: theme("colors.white"), // Sets the text color for <strong> in dark mode
+            },
+            // Define other tags as needed
+            h1: {
+              color: theme("colors.white"),
+            },
+            a: {
+              color: theme("colors.blue.400"),
+              "&:hover": {
+                color: theme("colors.blue.600"),
+              },
+            },
+            // Continue for other elements
+          },
+        },
+      }),
     },
   },
-  plugins: [addVariablesForColors, require("tailwindcss-animate")],
+  plugins: [
+    addVariablesForColors,
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+  ],
 } satisfies Config;
 
 export default config;

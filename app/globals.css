@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Assuming this is within your main CSS file where Tailwind directives are processed */
+@layer utilities {
+  .dark .prose {
+    --tw-prose-body: #d1d5db; /* gray-300 */
+    --tw-prose-headings: #d1d5db; /* gray-300 */
+    --tw-prose-links: #d1d5db; /* gray-300 */
+    --tw-prose-strong: #d1d5db; /* gray-300 */
+    /* Customize other elements as needed */
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -96,4 +107,8 @@
 
 .markdown-response a {
   color: #0000ff !important;
+}
+
+.dark .overwrite-text strong {
+  color: white !important;
 }

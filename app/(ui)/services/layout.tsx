@@ -32,7 +32,7 @@ Readonly<{
     <div className="flex h-screen bg-white dark:bg-gray-900 text-black dark:text-white overflow-hidden">
       {children}
 
-      <div className="pt-4 m-auto w-full max-w-4xl h-full flex-1 bg-gray-100 dark:bg-gray-900 overflow-auto ">
+      <div className="pt-4 m-auto w-full max-w-4xl h-full flex-1 bg-gray-100 dark:bg-gray-900 overflow-auto hide-scrollbar">
         <Suspense
           fallback={
             <div className="flex justify-center items-center min-h-screen">
