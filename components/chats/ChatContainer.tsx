@@ -294,9 +294,9 @@ const ChatContainer = ({
             >
               {/* User query */}
               <div className="text-left mysticky">
-                <div className="flex items-center justify-between bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
+                <div className="flex items-center justify-between bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white rounded-lg px-4 py-2 shadow">
                   <div className="flex gap-5 items-center flex-1">
-                    <Avatar className="h-7 w-7">
+                    <Avatar className="h-7 w-7 ">
                       <AvatarImage src={user?.image ?? ""} alt="FC" />
                       <AvatarFallback>FC</AvatarFallback>
                     </Avatar>
@@ -323,10 +323,12 @@ const ChatContainer = ({
               {exchange?.loading ? (
                 <div className="text-left mt-2">
                   <div className="flex gap-5 items-center bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-lg px-4 py-2 shadow animate-pulse">
-                    <Avatar className="h-7 w-7">
+                    <Avatar className="h-7 w-7 p-1 bg-gray-300 dark:bg-gray-300">
                       <AvatarImage
                         src={"./secondary-logo.svg"}
                         alt="Bot Avatar"
+                        height={8}
+                        width={8}
                       />
                       <AvatarFallback>FC</AvatarFallback>
                     </Avatar>

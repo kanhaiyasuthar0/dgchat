@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
-import SessionWrapper from "@/components/generic/SessionWrapper";
-import { Work_Sans } from "next/font/google";
+
+import { DM_Sans } from "next/font/google";
+
 import { SessionProvider } from "next-auth/react";
 // import { Toaster } from "@/components/ui/sonner";
 
-const roboto = Work_Sans({
+const roboto = DM_Sans({
   weight: "400",
   subsets: ["latin"],
 });
