@@ -95,15 +95,15 @@ const ResponseFormatter = ({
 
   return (
     <div className="text-pretty mt-2">
-      <div className="w-full flex flex-col gap-2 align-middle dark:bg-gray-600 dark:text-gray-300 rounded-lg px-4 py-2 shadow">
+      <div className="w-full flex flex-col gap-2 align-middle dark:bg-gray-800 dark:text-white rounded-lg px-4 py-2 shadow">
         <div className="flex gap-5">
           <span className=" mr-1">
-            <Avatar className="h-7 w-7 p-1 bg-gray-200 dark:bg-gray-300">
+            <Avatar className="h-7 w-7 p-1 bg-gray-300 dark:bg-gray-300">
               <AvatarImage height={8} width={8} src="./secondary-logo.svg" />
               <AvatarFallback>FC</AvatarFallback>
             </Avatar>{" "}
           </span>
-          <span>
+          <span className="w-full">
             {/* <Markdown
               // styles={markdownStyles}
               className="markdown-response leading-loose"
@@ -111,7 +111,7 @@ const ResponseFormatter = ({
             </Markdown> */}
             {/* {processResponse} */}
 
-            <Markdown className={"prose dark:text-gray-300 dark:prose-dark"}>
+            <Markdown className={"prose dark:text-white dark:prose-dark"}>
               {processResponse}
             </Markdown>
             {/* <Markdown
