@@ -119,10 +119,14 @@ interface TimezoneOption {
 }
 
 const AccountPreferences: React.FC<YourComponentProps> = ({ handleClose }) => {
+  let selectedLanguageLocal = localStorage?.getItem("language") || "en";
   // State for selected language
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(
+    selectedLanguageLocal || "en"
+  );
   // State for selected timezone
   const [selectedTimezone, setSelectedTimezone] = useState<string>("UTC-5");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Timezone options
   const timezoneOptions: TimezoneOption[] = [
@@ -131,8 +135,18 @@ const AccountPreferences: React.FC<YourComponentProps> = ({ handleClose }) => {
     // Add more timezones as needed
   ];
 
+  const handleSave = () => {
+    setIsLoading(true);
+    // Implement your save logic here (e.g., save to localStorage, call an API, etc.)
+    localStorage.setItem("language", selectedLanguage);
+    setTimeout(() => {
+      setIsLoading(false);
+      // handleClose(); // Close the preferences panel after saving
+    }, 1000);
+  };
+
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 dark:bg-gray-900 border w-full bg-gray-100 flex flex-col p-8 shadow-lg h-full rounded-lg transition-colors duration-300">
       <div>
         <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
           <SelectTrigger className="w-full">
@@ -170,6 +184,13 @@ const AccountPreferences: React.FC<YourComponentProps> = ({ handleClose }) => {
           </SelectContent>
         </Select>
       </div>
+      <button
+        onClick={handleSave}
+        disabled={isLoading}
+        className="mt-4 w-full dark:text-white text-white bg-gray-600 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-black-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+      >
+        {isLoading ? "Loading..." : "Save"}
+      </button>
     </section>
   );
 };
@@ -223,7 +244,7 @@ const CropSelection: React.FC<YourComponentProps> = () => {
   };
 
   return (
-    <section className="space-y-4">
+    <section className="">
       <div className="flex flex-col">
         <label
           htmlFor="crop-selection"
