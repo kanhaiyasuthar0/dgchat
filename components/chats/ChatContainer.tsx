@@ -6,10 +6,12 @@ import ChatInput from "./ChatInput"; // Component for the input area
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AssistComponent from "../generic/AssisComponent";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { File } from "buffer";
 import Image from "next/image";
+import { Session } from "next-auth";
+import { translateToEnglish, translateToHindi } from "@/utils/common";
 
 interface ResponseType {
   youtube_url: string;
@@ -37,14 +39,16 @@ interface IChatExchange {
 const ChatContainer = ({
   history,
   activeBotData,
+  session,
 }: {
   history: any;
   activeBotData: any;
+  session: Session | null;
 }) => {
   console.log("🚀 ~ ChatContainer ~ history:", history);
-  const { data: session } = useSession();
-  console.log("🚀 ~ session:", session);
-  const user = session?.user as User | undefined;
+  // const { data: session } = useSession();
+  // console.log("🚀 ~ session:", session);
+  const user = session?.user;
   console.log("🚀 ~ user:in123", user);
   const searchParams = useSearchParams();
   const [chatExchanges, setChatExchanges] = useState<IChatExchange[]>(
@@ -63,11 +67,15 @@ const ChatContainer = ({
     setChatExchanges([...chatExchanges, newExchange]);
 
     const formData = new FormData();
-    formData.append("query", inputText);
+    let mainText = inputText;
+    const language = localStorage?.getItem("language"); // Assuming you store the selected language in localStorage
+    if (language === "hi") {
+      mainText = await translateToEnglish(inputText);
+    }
+    formData.append("query", mainText);
     formData.append("email_id", user?.databaseId || "");
     formData.append("chain", "true");
 
-    // const crop = searchParams?.get("crop");
     const crop = localStorage?.subcat;
     const state = localStorage?.state ? JSON.parse(localStorage?.state) : "";
     const city = localStorage?.state ? JSON.parse(localStorage?.city) : "";
@@ -96,12 +104,6 @@ const ChatContainer = ({
     if (image) {
       formData.append("image", image); // Add image file to formData
     }
-    console.log(formData);
-
-    // Conditionally add `state` if `state` is defined and not empty
-    // if (state) {
-    //   payload.filters["state"] = state;
-    // }
 
     try {
       const response = await axios.post(
@@ -114,7 +116,20 @@ const ChatContainer = ({
         }
       );
 
-      console.log("🚀 ~ getResponse ~ response:", response);
+      const responseData = response?.data;
+      let queryResponse = responseData?.output?.query_response || "";
+      let followUpQuestions = responseData?.output?.follow_up_questions || [];
+      // Check if Hindi is selected, and translate the response if necessary
+      const language = localStorage?.getItem("language"); // Assuming you store the selected language in localStorage
+      if (language === "hi") {
+        queryResponse = await translateToHindi(queryResponse);
+        // Translate each follow-up question
+        followUpQuestions = await Promise.all(
+          followUpQuestions.map(async (question: string) => {
+            return await translateToHindi(question);
+          })
+        );
+      }
 
       setChatExchanges((currentExchanges) => {
         const updatedExchanges = [...currentExchanges];
@@ -122,7 +137,11 @@ const ChatContainer = ({
           const lastExchange = updatedExchanges.at(-1)!;
           updatedExchanges[updatedExchanges.length - 1] = {
             ...lastExchange,
-            response: response?.data.output,
+            response: {
+              ...responseData.output,
+              query_response: queryResponse, // Use the translated response if Hindi is selected
+              follow_up_questions: followUpQuestions,
+            },
             loading: false,
           };
         }
@@ -131,9 +150,7 @@ const ChatContainer = ({
     } catch (error) {
       setTimeout(() => {
         setChatExchanges((currentExchanges) => {
-          // Make a shallow copy of the array to ensure immutability
           const updatedExchanges = [...currentExchanges];
-          // Check if there are any exchanges and update the last one
           if (updatedExchanges.length > 0) {
             const lastExchange = updatedExchanges.at(-1)!;
             updatedExchanges[updatedExchanges.length - 1] = {
@@ -148,12 +165,10 @@ const ChatContainer = ({
               loading: false,
             };
           }
-          // bottomRef.current?.scrollIntoView({ behavior: "smooth" });
           return updatedExchanges;
         });
       }, 3000);
       console.error("Error sending message:", error);
-      // Optionally handle error state here
     }
   }
   async function fetchAllChatMessages() {
