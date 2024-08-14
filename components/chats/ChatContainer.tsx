@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { File } from "buffer";
 import Image from "next/image";
+import { translateToEnglish, translateToHindi } from "@/utils/common";
 
 interface ResponseType {
   youtube_url: string;
@@ -63,7 +64,12 @@ const ChatContainer = ({
     setChatExchanges([...chatExchanges, newExchange]);
 
     const formData = new FormData();
-    formData.append("query", inputText);
+    let mainText = inputText;
+    const language = localStorage?.getItem("language"); // Assuming you store the selected language in localStorage
+    if (language === "hi") {
+      mainText = await translateToEnglish(inputText);
+    }
+    formData.append("query", mainText);
     formData.append("email_id", user?.databaseId || "");
     formData.append("chain", "true");
 
@@ -116,13 +122,32 @@ const ChatContainer = ({
 
       console.log("🚀 ~ getResponse ~ response:", response);
 
+      const responseData = response?.data;
+      let queryResponse = responseData?.output?.query_response || "";
+      let followUpQuestions = responseData?.output?.follow_up_questions || [];
+      // Check if Hindi is selected, and translate the response if necessary
+      const language = localStorage?.getItem("language"); // Assuming you store the selected language in localStorage
+      if (language === "hi") {
+        queryResponse = await translateToHindi(queryResponse);
+        // Translate each follow-up question
+        followUpQuestions = await Promise.all(
+          followUpQuestions.map(async (question: string) => {
+            return await translateToHindi(question);
+          })
+        );
+      }
+
       setChatExchanges((currentExchanges) => {
         const updatedExchanges = [...currentExchanges];
         if (updatedExchanges.length > 0) {
           const lastExchange = updatedExchanges.at(-1)!;
           updatedExchanges[updatedExchanges.length - 1] = {
             ...lastExchange,
-            response: response?.data.output,
+            response: {
+              ...responseData.output,
+              query_response: queryResponse, // Use the translated response if Hindi is selected
+              follow_up_questions: followUpQuestions,
+            },
             loading: false,
           };
         }
