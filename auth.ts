@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import Auth from "@auth/core";
+// import Auth from "@auth/core";
 export const {
   auth,
   signIn,
