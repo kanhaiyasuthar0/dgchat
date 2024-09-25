@@ -16,6 +16,7 @@ export default function Search({
   const { replace } = useRouter();
   function handleSearch(term: string) {
     console.log(term);
+    //@ts-ignore
     const params = new URLSearchParams(searchParams!);
 
     if (term) {
