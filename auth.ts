@@ -77,7 +77,7 @@ async function createUser(user: { email: string; displayName: string }) {
 
   try {
     const response = await fetch(
-      "https://sandbox.farmstack.digitalgreen.org/ai/user/",
+      `${process.env.NEXT_BACKEND_BASE_URL}/ai/user/`,
       {
         method: "POST", // Assuming you're making a POST request
         headers: {

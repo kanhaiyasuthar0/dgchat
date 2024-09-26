@@ -9,7 +9,7 @@ const ChatContainerWrapper = async ({ id }: { id?: string }) => {
     console.log(data?.user);
     try {
       const response = await fetch(
-        "https://sandbox.farmstack.digitalgreen.org/ai/chat/chat_history/",
+        `${process.env.NEXT_BACKEND_BASE_URL}/ai/chat/chat_history/`,
         {
           method: "POST",
           body: JSON.stringify({
