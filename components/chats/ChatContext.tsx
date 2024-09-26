@@ -18,7 +18,7 @@ export function ChatContextProvider({ children }: { children: ReactNode }) {
   ): Promise<CatSubcatResponse> {
     try {
       const response = await fetch(
-        `https://sandbox.farmstack.digitalgreen.org/ai/chat/cat_and_subcat/?state=${selectedState}`,
+        `${process.env.NEXT_BACKEND_BASE_URL}/ai/chat/cat_and_subcat/?state=${selectedState}`,
         {
           method: "GET", // Change to 'GET' if your API expects a GET request.
           headers: {
