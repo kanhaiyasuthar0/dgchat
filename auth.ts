@@ -77,7 +77,7 @@ async function createUser(user: { email: string; displayName: string }) {
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_BACKEND_BASE_URL}/ai/user/`,
+      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/ai/user/`,
       {
         method: "POST", // Assuming you're making a POST request
         headers: {
