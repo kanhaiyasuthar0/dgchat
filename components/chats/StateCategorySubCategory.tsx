@@ -168,7 +168,7 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
     try {
       setIsLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_BACKEND_BASE_URL}/ai/chat/cat_and_subcat/?state=${selectedState}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/ai/chat/cat_and_subcat/?state=${selectedState}`,
         {
           method: "GET", // Change to 'GET' if your API expects a GET request.
           headers: {

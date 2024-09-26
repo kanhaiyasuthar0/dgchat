@@ -111,7 +111,7 @@ const ChatContainer = ({
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_BACKEND_BASE_URL}/ai/chat/chat_api/`,
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/ai/chat/chat_api/`,
         formData, // Sending formData instead of JSON
         {
           headers: {
@@ -196,7 +196,7 @@ const ChatContainer = ({
 
     try {
       const response = await axios.get(
-        `${process.env.NEXT_BACKEND_BASE_URL}/ai/chat/chat_history/${user?.databaseId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/ai/chat/chat_history/${user?.databaseId}`
       );
       // throw new Error("Simulated Error");
 

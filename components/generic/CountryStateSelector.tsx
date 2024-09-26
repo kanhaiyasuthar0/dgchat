@@ -126,7 +126,7 @@ const CountryStateSelector: FC<CountryStateSelectorProps> = ({
     try {
       setIsLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_BACKEND_BASE_URL}/ai/chat/state/`
+        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/ai/chat/state/`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
