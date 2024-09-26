@@ -6,6 +6,10 @@ RUN apk add --no-cache git
 # Set the working directory inside the container
 WORKDIR /app
 
+ARG NEXTAUTH_SECRET
+
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+
 # Copy the package.json and package-lock.json files
 COPY package*.json ./
 
