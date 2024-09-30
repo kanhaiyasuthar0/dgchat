@@ -223,7 +223,7 @@ const StateCategorySubCategory: React.FC<MyComponentProps> = ({
 
   return (
     <div
-      className="space-y-4 mt-4 dark:bg-gray-900 border w-full bg-gray-100 flex flex-col p-8 shadow-lg h-full rounded-lg transition-colors duration-300"
+      className="space-y-4 dark:bg-gray-900 border w-full bg-gray-100 flex flex-col p-8 shadow-lg h-full rounded-lg transition-colors duration-300"
 
       // className={``}
     >
