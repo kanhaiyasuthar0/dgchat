@@ -4,13 +4,19 @@ import Prepopulate from "./Prepulate";
 import Markdown from "react-markdown";
 // import Markdown from "react-native-simple-markdown";
 import ReadAloudButton from "../generic/ReadAloudButton";
-import { ClipboardCopy, ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
+import { ClipboardCopy, ThumbsDown, ThumbsUp, Volume2, X } from "lucide-react";
 import { toast } from "sonner";
 import rehypeSanitize from "rehype-sanitize";
+import { generateSpeech } from "@/actions/googleTTS.action";
+import { useEffect, useRef, useState } from "react";
+import { Popover } from "antd";
+// import { Volume2, ClipboardCopy, ThumbsUp, ThumbsDown, Loader, X } from "react-feather"; // You can replace with your own icons
 // import { RxClipboardCopy } from "react-icons/rx";
 // import marked from "marked";
 // import ProcessedResponse from "./ProcessedResponse";
 // import local from "./process-response.module.css";
+import WaveSurfer from "wavesurfer.js";
+import { Button } from "../ui/button";
 const ResponseFormatter = ({
   exchange,
   getResponse,
@@ -64,7 +70,28 @@ const ResponseFormatter = ({
     }
   }
 
+  function sanitizeTextForTTS(text: string): string {
+    // Remove markdown symbols like **, __, ##, etc.
+    let sanitizedText = text
+      .replace(/\*\*/g, "") // Remove bold (**)
+      .replace(/__|~~/g, "") // Remove other markdown symbols like __, ~~
+      .replace(/<\/?[^>]+(>|$)/g, "") // Remove any HTML tags
+      .replace(/[-*#>]/g, "") // Remove list symbols (-, *, #, >)
+      .replace(/\n\s*\n/g, ". ") // Convert newlines to periods
+      .replace(/\n/g, " "); // Remove single newlines
+
+    // Further cleanup (if needed), replace specific TTS-problematic symbols
+    sanitizedText = sanitizedText.replace(/&/g, "and");
+
+    return sanitizedText;
+  }
+
+  const [audioUrl, setAudioUrl] = useState(null); // Holds the audio URL created from the binary data
+  const [isPlaying, setIsPlaying] = useState(false); // Controls play/pause state
+  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null); // Error state
   function preprocessText(text: string | undefined): any {
+    console.log("🚀 ~ preprocessText ~ text:", text);
     if (!text) return "";
 
     // Ensure correct newline handling for lists by only adding double newlines where appropriate
@@ -92,6 +119,113 @@ const ResponseFormatter = ({
   }
 
   const processResponse = preprocessText(exchange?.query_response);
+
+  const hide = () => {
+    setOpen(false);
+  };
+
+  // Handle opening/closing of the Popover
+  const handleOpenChange = async (openState) => {
+    setOpen(openState);
+    if (openState && processResponse) {
+      await tts(processResponse); // Generate audio when the Popover opens
+    }
+  };
+
+  // Function to convert base64 string to Uint8Array (binary data)
+  const base64ToUint8Array = (base64) => {
+    const binaryString = window.atob(base64); // Decode base64
+    const binaryLen = binaryString.length;
+    const bytes = new Uint8Array(binaryLen);
+
+    for (let i = 0; i < binaryLen; i++) {
+      const ascii = binaryString.charCodeAt(i);
+      bytes[i] = ascii;
+    }
+
+    return bytes;
+  };
+
+  // Function to fetch audioContent and play it
+  const tts = async (text) => {
+    console.log("🚀 ~ tts ~ text:", text);
+    setIsLoading(true);
+    setError(null);
+    setAudioUrl(null); // Reset any existing audio
+
+    try {
+      let sanitisedText = sanitizeTextForTTS(text);
+      // Assume generateSpeech returns the audioContent as a binary response
+      const response = await generateSpeech(sanitisedText);
+      console.log("🚀 ~ tts ~ response:", response);
+      console.log(response && response.audioContent, "response.audioContent");
+      if (response.audioContent) {
+        const audioBinary = base64ToUint8Array(response.audioContent);
+        // Convert binary audioContent to a Blob
+        const audioBlob = new Blob([audioBinary], {
+          type: "audio/mp3", // Ensure correct MIME type
+        });
+
+        // // Convert base64 or binary audioContent to a Blob
+        // const audioBlob = new Blob([new Uint8Array(response.audioContent)], {
+        //   type: "audio/mp3",
+        // });
+
+        // Create an object URL from the Blob
+        const audioUrl = URL.createObjectURL(audioBlob);
+        console.log("🚀 ~ tts ~ audioUrl:", audioUrl);
+        setAudioUrl(audioUrl); // Set the audio URL for playback
+
+        setIsLoading(false);
+        toast("Audio generated. Click play to listen.");
+      } else {
+        throw new Error("Failed to retrieve audio content");
+      }
+    } catch (error) {
+      setError("Failed to generate speech. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  // Function to handle play/pause
+  const togglePlay = () => {
+    const audioElement = document.getElementById("audioPlayer");
+    if (audioElement) {
+      if (isPlaying) {
+        audioElement.pause();
+        setIsPlaying(false);
+      } else {
+        audioElement.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  // Function to stop the audio
+  const stopAudio = () => {
+    const audioElement = document.getElementById("audioPlayer");
+    if (audioElement) {
+      audioElement.pause();
+      audioElement.currentTime = 0; // Reset the audio to the start
+      setIsPlaying(false);
+    }
+  };
+
+  // // Initialize WaveSurfer instance
+  // useEffect(() => {
+  //   if (audioRef.current && !waveSurfer) {
+  //     const wave = WaveSurfer.create({
+  //       container: audioRef.current,
+  //       waveColor: "#ddd",
+  //       progressColor: "#4A90E2",
+  //       height: 80,
+  //       barWidth: 2,
+  //       cursorWidth: 1,
+  //       responsive: true,
+  //     });
+  //     setWaveSurfer(wave);
+  //   }
+  // }, [audioRef, waveSurfer]);
 
   return (
     <div className="text-pretty mt-2">
@@ -146,21 +280,57 @@ const ResponseFormatter = ({
           )}
 
           {/* showing options */}
-          <div className="flex justify-end gap-1 mt-2">
-            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
-              <Volume2 onClick={() => toast("Starting...")} size={15} />
+
+          <div className="flex justify-end gap-1 mt-2 items-center">
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm h-fit">
+              {audioUrl && (
+                <audio
+                  id="audioPlayer"
+                  src={audioUrl}
+                  onEnded={() => setIsPlaying(false)}
+                  controls={true}
+                  autoPlay={true}
+                />
+              )}
             </div>
-            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
-              <ClipboardCopy onClick={() => toast("Copied")} size={15} />
+
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm h-fit">
+              <Volume2
+                onClick={async () => {
+                  toast("Starting...");
+                  await tts(processResponse); // Trigger TTS and auto-play
+                }}
+                size={15}
+              />
             </div>
-            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
+
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm h-fit">
+              <ClipboardCopy
+                onClick={() => {
+                  toast("Copied");
+                }}
+                size={15}
+              />
+            </div>
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm h-fit">
               <ThumbsUp onClick={() => toast("Liked!")} size={15} />
             </div>
-            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm">
+            <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm h-fit">
               <ThumbsDown onClick={() => toast("Disliked!")} size={15} />
             </div>
           </div>
+          {/* {audioUrl && (
+            <audio
+              id="audioPlayer"
+              src={audioUrl}
+              onEnded={() => setIsPlaying(false)}
+              controls={true}
+            />
+          )} */}
+          {/* Audio player */}
+          {console.log(audioUrl, "audioUrl******")}
 
+          {/* <div ref={audioRef}></div> WaveSurfer container */}
           {/* Follow-up Questions */}
           {exchange?.follow_up_questions &&
             exchange?.follow_up_questions?.length > 0 && (
@@ -172,7 +342,6 @@ const ResponseFormatter = ({
                 />
               </div>
             )}
-
           {/* <ProcessedResponse /> */}
         </div>
       </div>
