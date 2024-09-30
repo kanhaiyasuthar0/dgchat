@@ -66,9 +66,9 @@ const ChatContainer = ({
     const formData = new FormData();
     let mainText = inputText;
     const language = localStorage?.getItem("language"); // Assuming you store the selected language in localStorage
-    if (language === "hi") {
-      mainText = await translateToEnglish(inputText);
-    }
+    // if (language === "hi") {
+    //   mainText = await translateToEnglish(inputText);
+    // }
     formData.append("query", mainText);
     formData.append("email_id", user?.databaseId || "");
     formData.append("chain", "true");
@@ -126,16 +126,16 @@ const ChatContainer = ({
       let queryResponse = responseData?.output?.query_response || "";
       let followUpQuestions = responseData?.output?.follow_up_questions || [];
       // Check if Hindi is selected, and translate the response if necessary
-      const language = localStorage?.getItem("language"); // Assuming you store the selected language in localStorage
-      if (language === "hi") {
-        queryResponse = await translateToHindi(queryResponse);
-        // Translate each follow-up question
-        followUpQuestions = await Promise.all(
-          followUpQuestions.map(async (question: string) => {
-            return await translateToHindi(question);
-          })
-        );
-      }
+      // const language = localStorage?.getItem("language"); // Assuming you store the selected language in localStorage
+      // if (language === "hi") {
+      //   queryResponse = await translateToHindi(queryResponse);
+      //   // Translate each follow-up question
+      //   followUpQuestions = await Promise.all(
+      //     followUpQuestions.map(async (question: string) => {
+      //       return await translateToHindi(question);
+      //     })
+      //   );
+      // }
 
       setChatExchanges((currentExchanges) => {
         const updatedExchanges = [...currentExchanges];
