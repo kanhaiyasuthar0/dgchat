@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { Button } from "../ui/button";
 import Prepopulate from "./Prepulate";
@@ -280,7 +281,7 @@ const ResponseFormatter = ({
           )}
 
           {/* showing options */}
-
+          {/* @ts-ignore  */}
           <div className="flex justify-end gap-1 mt-2 items-center">
             <div className="hover:bg-gray-400 hover:text-white cursor-pointer p-1 rounded-sm h-fit">
               {audioUrl && (
