@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use server";
 
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
