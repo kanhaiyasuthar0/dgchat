@@ -60,7 +60,9 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
           <CountryCustomization states={states} handleClose={handleClose} />
         );
       default:
-        return <AccountPreferences isOpen={isOpen} handleClose={handleClose} />;
+        return (
+          <CountryCustomization states={states} handleClose={handleClose} />
+        );
     }
   };
 
@@ -87,12 +89,12 @@ const SettingsDialog: React.FC<YourComponentProps> = ({
           >
             Crop Settings
           </li> */}
-          <li
+          {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
             onClick={() => setActiveSection("accountPreferences")}
           >
             Account Preferences
-          </li>
+          </li> */}
           {/* Commented out Notification Settings for future use */}
           {/* <li
             className="cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"

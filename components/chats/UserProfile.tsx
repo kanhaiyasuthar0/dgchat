@@ -77,12 +77,12 @@ const UserProfile = () => {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-white dark:bg-gray-700 rounded-md shadow-xl w-[200px]">
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
             onSelect={() => setIsOpen(true)}
           >
             Settings
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem
             className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600"
             onSelect={handleSignOut}
