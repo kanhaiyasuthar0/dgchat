@@ -34,6 +34,7 @@ interface IChatExchange {
   response?: ResponseType; // Optional since the response will be populated later
   loading?: boolean;
   image?: string;
+  audio?: any;
 }
 const ChatContainer = ({
   history,
@@ -53,12 +54,13 @@ const ChatContainer = ({
   );
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  async function getResponse(inputText: string, image?: Blob) {
+  async function getResponse(inputText: string, image?: Blob, audio?: Blob) {
     const newExchange: IChatExchange = {
       id: chatExchanges.length + 1,
-      query: inputText,
+      query: audio ? "Audio is being sent" : inputText,
       loading: true,
       image: image ? URL.createObjectURL(image) : "",
+      audio: audio ? audio : "",
     };
 
     setChatExchanges([...chatExchanges, newExchange]);
@@ -102,6 +104,11 @@ const ChatContainer = ({
     if (image) {
       formData.append("image", image); // Add image file to formData
     }
+
+    // Append audio if available
+    if (audio) {
+      formData.append("audio", audio, "audio.ogg");
+    }
     console.log(formData);
 
     // Conditionally add `state` if `state` is defined and not empty
@@ -143,6 +150,7 @@ const ChatContainer = ({
           const lastExchange = updatedExchanges.at(-1)!;
           updatedExchanges[updatedExchanges.length - 1] = {
             ...lastExchange,
+            query: responseData.query,
             response: {
               ...responseData.output,
               query_response: queryResponse, // Use the translated response if Hindi is selected
@@ -165,7 +173,7 @@ const ChatContainer = ({
               ...lastExchange,
               response: {
                 youtube_url: "",
-                query_response: "SOMETHING WENT WRONG",
+                query_response: "Something went wrong...",
                 condensed_question: "What can you tell me about wheat blast?",
                 follow_up_questions: [],
                 query: "Tell me about wheat blast",
@@ -229,7 +237,7 @@ const ChatContainer = ({
               ...lastExchange,
               response: {
                 youtube_url: "",
-                query_response: "SOMETHING WENT WRONG",
+                query_response: "Something went wrong...",
                 condensed_question: "What can you tell me about wheat blast?",
                 follow_up_questions: [],
                 query: "Tell me about wheat blast",
