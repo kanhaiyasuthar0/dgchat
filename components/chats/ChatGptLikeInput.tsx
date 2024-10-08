@@ -87,7 +87,7 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
     } else {
       await getResponse(inputValue); // Send text only
     }
-
+    setAudioBlob(null);
     setwaitingForReply(false);
   };
 
@@ -225,10 +225,10 @@ const ChatGptLikeInput: React.FC<MyComponentProps> = ({
           mediaRecorder.start();
           console.log("Recording started");
 
-          // Stop the recording after 5 seconds (to allow time for data collection)
-          setTimeout(() => {
-            mediaRecorder.stop();
-          }, 5000);
+          // // Stop the recording after 5 seconds (to allow time for data collection)
+          // setTimeout(() => {
+          //   mediaRecorder.stop();
+          // }, 5000);
         })
         .catch((error) => {
           console.error("Error accessing microphone:", error);
