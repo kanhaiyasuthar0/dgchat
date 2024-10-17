@@ -60,7 +60,8 @@ const ChatContainerWrapper = async ({ id }: { id?: string }) => {
     }
   };
 
-  const allChatHistory: any = !id ? await fetchChatHistory() : [];
+  const allChatHistory: any = [];
+  // const allChatHistory: any = !id ? await fetchChatHistory() : [];
   const activeBotData: any = id ? await fetchBotData() : null;
 
   function updateKeyInObjects(
