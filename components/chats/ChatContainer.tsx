@@ -72,7 +72,8 @@ const ChatContainer = ({
     //   mainText = await translateToEnglish(inputText);
     // }
     formData.append("query", mainText);
-    formData.append("email_id", user?.databaseId || "");
+    formData.append("email_id", "28ccd52e-255d-4b73-b11c-ccf8e2de8cb9"); // comment if auth is required
+    // formData.append("email_id", user?.databaseId || ""); // uncomment if rolling back to user auth with google
     formData.append("chain", "true");
 
     // const crop = searchParams?.get("crop");
