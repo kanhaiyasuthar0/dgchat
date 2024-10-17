@@ -13,7 +13,7 @@ const ChatContainerWrapper = async ({ id }: { id?: string }) => {
         {
           method: "POST",
           body: JSON.stringify({
-            email_id: data?.user?.databaseId,
+            email_id: "28ccd52e-255d-4b73-b11c-ccf8e2de8cb9", // data?.user?.databaseId,
           }),
           headers: {
             "Content-Type": "application/json", // This header tells the server to expect JSON

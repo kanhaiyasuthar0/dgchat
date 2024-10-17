@@ -78,7 +78,7 @@ const SidebarContent = async () => {
       </div>
 
       {/* User profile section */}
-      <div className="mt-auto">
+      <div className="mt-auto hidden">
         <Suspense
           fallback={
             <div className="flex items-center space-x-4">
@@ -90,7 +90,7 @@ const SidebarContent = async () => {
             </div>
           }
         >
-          <UserProfile />
+          {/* <UserProfile /> */}
         </Suspense>
       </div>
     </>
