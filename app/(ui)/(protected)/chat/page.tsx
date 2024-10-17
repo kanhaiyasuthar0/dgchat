@@ -18,13 +18,13 @@ export async function generateMetadata(
     "inside metdata"
   );
   return {
-    title: `${data?.user.name} | FarmChat by Digital Green: Empowering Farmers Through Conversation`,
+    title: `FarmChat by Digital Green: Empowering Farmers Through Conversation`,
     description:
       "FarmChat, powered by Digital Green, connects farmers across the globe, offering a platform for sharing insights, advice, and innovations in agriculture. Join our community to grow together.",
     openGraph: {
       type: "website",
       url: process.env.NEXTAUTH_URL,
-      title: `${data?.user.name} | FarmChat by Digital Green: Empowering Farmers Through Conversation`,
+      title: `FarmChat by Digital Green: Empowering Farmers Through Conversation`,
       description:
         "FarmChat, powered by Digital Green, connects farmers across the globe, offering a platform for sharing insights, advice, and innovations in agriculture. Join our community to grow together.",
       siteName: "FarmChat by Digital Green",
