@@ -11,9 +11,9 @@ export default auth((req) => {
   // if (pathname == "/chat" && !isLoggedIn) {
   //   return Response.redirect(new URL("/", nextUrl));
   // }
-  // if (isLoggedIn && pathname == "/") {
-  // return Response.redirect(new URL("/chat", nextUrl));
-  // }
+  if (pathname == "/") {
+    return Response.redirect(new URL("/chat", nextUrl));
+  }
 });
 export const config = {
   // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
